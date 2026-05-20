@@ -6,10 +6,12 @@ from dotenv import load_dotenv
 BASE_DIR = Path(__file__).resolve().parent
 load_dotenv(BASE_DIR / ".env")
 
-# Railway postgres:// → postgresql:// fix
+# Railway postgres:// → postgresql+psycopg:// fix (psycopg3)
 database_url = os.getenv("DATABASE_URL", f"sqlite:///{BASE_DIR / 'instance' / 'roloband.db'}")
 if database_url.startswith("postgres://"):
-    database_url = database_url.replace("postgres://", "postgresql://", 1)
+    database_url = database_url.replace("postgres://", "postgresql+psycopg://", 1)
+elif database_url.startswith("postgresql://"):
+    database_url = database_url.replace("postgresql://", "postgresql+psycopg://", 1)
 
 
 class BaseConfig:
