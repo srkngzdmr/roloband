@@ -64,4 +64,24 @@ def create_app(config_name=None):
     from app.utils.cli import register_cli
     register_cli(app)
 
+    # DB tabloları ve seed — uygulama ilk başlarken
+    with app.app_context():
+        try:
+            db.create_all()
+            from app.models import AdminUser
+            from app.utils.seeder import run_seed
+            from werkzeug.security import generate_password_hash
+            if not AdminUser.query.first():
+                admin = AdminUser(
+                    email="admin@roloband.com",
+                    password_hash=generate_password_hash("roloband2024"),
+                    full_name="Site Yöneticisi",
+                    role="admin"
+                )
+                db.session.add(admin)
+                db.session.commit()
+                run_seed()
+        except Exception as e:
+            print(f"DB init error: {e}")
+
     return app
