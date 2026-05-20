@@ -1,0 +1,73 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{% if category %}{{ category.name }} Düzenle{% else %}Yeni Kategori{% endif %}{% endblock %}
+
+{% block content %}
+<div class="admin-header">
+  <div>
+    <h1 class="admin-page-title">{% if category %}Kategori Düzenle{% else %}Yeni Kategori{% endif %}</h1>
+  </div>
+  <div class="admin-header-actions">
+    <a href="{{ url_for('admin.categories_list') }}" class="btn btn-outline">← Geri</a>
+  </div>
+</div>
+
+<form method="POST" enctype="multipart/form-data" class="admin-form">
+  {{ form.hidden_tag() }}
+
+  <div class="admin-grid-form">
+    <div>
+      <div class="admin-card">
+        <div class="form-group">
+          {{ form.name.label }}
+          {{ form.name(class="form-input", placeholder="ör. 12.7 mm Hatveli Bantlar") }}
+          {% if form.name.errors %}<div class="form-error">{{ form.name.errors[0] }}</div>{% endif %}
+        </div>
+
+        <div class="form-group">
+          {{ form.slug.label }}
+          {{ form.slug(class="form-input", placeholder="otomatik-uretilecek") }}
+          <div class="form-hint">Boş bırakırsan başlıktan otomatik üretilir.</div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            {{ form.pitch_mm.label }}
+            {{ form.pitch_mm(class="form-input", placeholder="12.7", step="0.01") }}
+            <div class="form-hint">mm cinsinden hatve değeri</div>
+          </div>
+          <div class="form-group">
+            {{ form.order_index.label }}
+            {{ form.order_index(class="form-input", type="number", min=0) }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          {{ form.description.label }}
+          {{ form.description(class="form-textarea", rows=8, placeholder="Kategorinin teknik açıklaması, kullanım alanları...") }}
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="admin-card">
+        <h3 class="admin-card-title">Kapak Görseli</h3>
+        {% if category and category.cover_image %}
+          <div class="current-image">
+            <img src="{{ category.cover_image }}" alt="">
+            <div class="muted">Mevcut görsel</div>
+          </div>
+        {% endif %}
+        <div class="form-group">
+          {{ form.cover_image_file.label }}
+          {{ form.cover_image_file(class="form-input-file") }}
+        </div>
+      </div>
+
+      <div class="admin-card">
+        <button type="submit" class="btn btn-primary btn-block btn-lg">{% if category %}Güncelle{% else %}Oluştur{% endif %}</button>
+      </div>
+    </div>
+  </div>
+</form>
+{% endblock %}

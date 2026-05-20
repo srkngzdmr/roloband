@@ -1,0 +1,55 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Menü Yönetimi{% endblock %}
+
+{% block content %}
+<div class="admin-header">
+  <div>
+    <h1 class="admin-page-title">Site Menüsü</h1>
+    <p class="admin-page-subtitle">Üst menüde görünecek bağlantıları yönet.</p>
+  </div>
+  <div class="admin-header-actions">
+    <a href="{{ url_for('admin.menu_create') }}" class="btn btn-primary">+ Yeni Menü Ögesi</a>
+  </div>
+</div>
+
+<div class="admin-card admin-card-table">
+  {% if menu_items %}
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Sıra</th>
+          <th>Etiket</th>
+          <th>URL</th>
+          <th>Yeni Sekme</th>
+          <th>Aktif</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in menu_items %}
+          <tr>
+            <td>{{ item.order_index }}</td>
+            <td><strong>{{ item.label }}</strong></td>
+            <td><code>{{ item.url }}</code></td>
+            <td>{% if item.open_in_new_tab %}↗{% else %}—{% endif %}</td>
+            <td>{% if item.is_active %}<span class="tag tag-success">Aktif</span>{% else %}<span class="tag tag-muted">Pasif</span>{% endif %}</td>
+            <td class="actions-cell">
+              <a href="{{ url_for('admin.menu_edit', item_id=item.id) }}" class="btn-icon" title="Düzenle">✎</a>
+              <form method="POST" action="{{ url_for('admin.menu_delete', item_id=item.id) }}" style="display:inline" onsubmit="return confirm('Bu menü ögesini silmek istediğine emin misin?');">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn-icon btn-icon-danger" title="Sil">🗑</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <div class="admin-empty">
+      <p>Henüz menü ögesi yok.</p>
+      <a href="{{ url_for('admin.menu_create') }}" class="btn btn-primary">İlk menü ögesini ekle</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

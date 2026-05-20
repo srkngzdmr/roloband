@@ -1,0 +1,103 @@
+{% extends "public/base.html" %}
+{% block title %}{{ product.code }} {{ product.name }} | {{ site_name }}{% endblock %}
+{% block description %}{{ product.short_description }}{% endblock %}
+
+{% block content %}
+<header class="page-header">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="/">Anasayfa</a> /
+      <a href="{{ url_for('public.products_index') }}">Ürünler</a> /
+      <a href="{{ url_for('public.category_detail', slug=product.category.slug) }}">{{ product.category.name }}</a> /
+      {{ product.code }}
+    </div>
+    {% if product.code %}<div style="color:rgba(255,255,255,.7);font-weight:600;letter-spacing:.05em;text-transform:uppercase;font-size:.85rem;">{{ product.code }}</div>{% endif %}
+    <h1>{{ product.name }}</h1>
+    {% if product.short_description %}<p>{{ product.short_description }}</p>{% endif %}
+  </div>
+</header>
+
+<section>
+  <div class="container">
+    <div class="product-detail-grid">
+      <div class="product-detail-media">
+        {% if product.cover_image %}
+          <img src="{{ product.cover_image }}" alt="{{ product.name }}">
+        {% else %}
+          <div style="text-align:center;padding:3rem;">
+            <div style="font-family:var(--rb-font-display);font-size:3rem;font-weight:700;color:var(--rb-primary-dark);opacity:.5;">
+              ROLO BAND
+            </div>
+            <div style="font-family:var(--rb-font-display);font-size:1.5rem;color:var(--rb-text-2);margin-top:.5rem;">
+              {{ product.code }}
+            </div>
+          </div>
+        {% endif %}
+      </div>
+
+      <div>
+        {% if product.description %}
+          <h3 style="margin-top:0;">Ürün Tanımı</h3>
+          <div style="color:var(--rb-text-2);">{{ product.description | safe }}</div>
+        {% endif %}
+
+        <h3 style="margin-top:2rem;">Teknik Özellikler</h3>
+        <table class="tech-table">
+          {% if product.pitch_mm %}<tr><th>Hatve</th><td>{{ product.pitch_mm }} mm</td></tr>{% endif %}
+          {% if product.thickness_mm %}<tr><th>Kalınlık</th><td>{{ product.thickness_mm }} mm</td></tr>{% endif %}
+          {% if product.pin_diameter_mm %}<tr><th>Pim Çapı</th><td>Ø {{ product.pin_diameter_mm }} mm (Kendinden Kilitli)</td></tr>{% endif %}
+          {% if product.open_area_pct is not none %}<tr><th>Açıklık Oranı</th><td>%{{ product.open_area_pct|int }}</td></tr>{% endif %}
+          {% if product.surface_type %}<tr><th>Yüzey Tipi</th><td>{{ product.surface_type }}</td></tr>{% endif %}
+          {% if product.materials %}<tr><th>Malzemeler</th><td>{{ product.materials }}</td></tr>{% endif %}
+          {% if product.temp_min is not none and product.temp_max is not none %}
+            <tr><th>Sıcaklık Dayanımı</th><td>{{ product.temp_min }}°C ile +{{ product.temp_max }}°C</td></tr>
+          {% endif %}
+          {% if product.certifications %}<tr><th>Sertifikalar</th><td>{{ product.certifications }}</td></tr>{% endif %}
+        </table>
+
+        <div style="display:flex;gap:.75rem;flex-wrap:wrap;margin-top:2rem;">
+          <a href="{{ url_for('public.contact') }}?subject=Ürün+Bilgisi:+{{ product.code }}" class="btn btn-primary-solid">
+            Bu Ürün İçin Teklif Al
+          </a>
+          {% if product.datasheet_pdf %}
+            <a href="{{ product.datasheet_pdf }}" target="_blank" class="btn btn-outline">
+              Teknik Föy (PDF)
+            </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    {% if product.usage_areas %}
+      <div style="margin-top:4rem;">
+        <h2 style="margin-bottom:1.5rem;">Kullanım Alanları</h2>
+        <div style="color:var(--rb-text-2);max-width:800px;">{{ product.usage_areas | safe }}</div>
+      </div>
+    {% endif %}
+
+    {% if related %}
+      <div style="margin-top:5rem;">
+        <h2 style="margin-bottom:2rem;">Benzer Ürünler</h2>
+        <div class="product-grid">
+          {% for r in related %}
+            <a href="{{ url_for('public.product_detail', slug=r.slug) }}" class="product-card">
+              <div class="image">
+                {% if r.cover_image %}
+                  <img src="{{ r.cover_image }}" alt="{{ r.name }}" loading="lazy">
+                {% else %}
+                  <div class="placeholder">{{ r.code }}</div>
+                {% endif %}
+              </div>
+              <div class="body">
+                {% if r.code %}<div class="code">{{ r.code }}</div>{% endif %}
+                <h3>{{ r.name }}</h3>
+                <p class="desc">{{ r.short_description }}</p>
+              </div>
+            </a>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

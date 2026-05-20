@@ -1,0 +1,71 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Mesaj: {{ message.full_name }}{% endblock %}
+
+{% block content %}
+<div class="admin-header">
+  <div>
+    <h1 class="admin-page-title">{{ message.subject or 'Mesaj' }}</h1>
+    <p class="admin-page-subtitle">{{ message.created_at.strftime('%d %B %Y, %H:%M') }}</p>
+  </div>
+  <div class="admin-header-actions">
+    <a href="{{ url_for('admin.messages_list') }}" class="btn btn-outline">← Tüm Mesajlar</a>
+    <a href="mailto:{{ message.email }}?subject=Re: {{ message.subject or 'Talebiniz hakkında' }}" class="btn btn-primary">E-posta Yanıtla</a>
+  </div>
+</div>
+
+<div class="admin-grid-form">
+  <div>
+    <div class="admin-card">
+      <h3 class="admin-card-title">Mesaj İçeriği</h3>
+      <div class="message-body">{{ message.message|replace('\n', '<br>')|safe }}</div>
+    </div>
+  </div>
+
+  <div>
+    <div class="admin-card">
+      <h3 class="admin-card-title">Gönderen Bilgileri</h3>
+
+      <div class="message-info">
+        <div class="info-row">
+          <span class="info-label">Ad Soyad</span>
+          <span class="info-value">{{ message.full_name }}</span>
+        </div>
+
+        {% if message.company %}
+        <div class="info-row">
+          <span class="info-label">Firma</span>
+          <span class="info-value">{{ message.company }}</span>
+        </div>
+        {% endif %}
+
+        <div class="info-row">
+          <span class="info-label">E-posta</span>
+          <span class="info-value"><a href="mailto:{{ message.email }}">{{ message.email }}</a></span>
+        </div>
+
+        {% if message.phone %}
+        <div class="info-row">
+          <span class="info-label">Telefon</span>
+          <span class="info-value"><a href="tel:{{ message.phone|replace(' ', '') }}">{{ message.phone }}</a></span>
+        </div>
+        {% endif %}
+
+        {% if message.ip_address %}
+        <div class="info-row">
+          <span class="info-label">IP Adresi</span>
+          <span class="info-value muted">{{ message.ip_address }}</span>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="admin-card">
+      <form method="POST" action="{{ url_for('admin.message_delete', msg_id=message.id) }}" onsubmit="return confirm('Bu mesajı silmek istediğine emin misin?');">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" class="btn btn-danger btn-block">Mesajı Sil</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

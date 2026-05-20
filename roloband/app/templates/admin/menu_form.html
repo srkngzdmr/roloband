@@ -1,0 +1,61 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{% if item %}Menü Ögesini Düzenle{% else %}Yeni Menü Ögesi{% endif %}{% endblock %}
+
+{% block content %}
+<div class="admin-header">
+  <div>
+    <h1 class="admin-page-title">{% if item %}Menü Ögesini Düzenle{% else %}Yeni Menü Ögesi{% endif %}</h1>
+  </div>
+  <div class="admin-header-actions">
+    <a href="{{ url_for('admin.menu_list') }}" class="btn btn-outline">← Geri</a>
+  </div>
+</div>
+
+<form method="POST" class="admin-form">
+  {{ form.hidden_tag() }}
+
+  <div class="admin-grid-form">
+    <div>
+      <div class="admin-card">
+        <div class="form-group">
+          {{ form.label.label }}
+          {{ form.label(class="form-input", placeholder="ör. Ürünler") }}
+          {% if form.label.errors %}<div class="form-error">{{ form.label.errors[0] }}</div>{% endif %}
+        </div>
+
+        <div class="form-group">
+          {{ form.url.label }}
+          {{ form.url(class="form-input", placeholder="/urunler veya https://...") }}
+          <div class="form-hint">Site içi: <code>/urunler</code> · Dış link: <code>https://...</code></div>
+          {% if form.url.errors %}<div class="form-error">{{ form.url.errors[0] }}</div>{% endif %}
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            {{ form.order_index.label }}
+            {{ form.order_index(class="form-input", type="number", min=0) }}
+            <div class="form-hint">Küçük olan önce görünür.</div>
+          </div>
+        </div>
+
+        <div class="form-check">
+          {{ form.is_active() }}
+          {{ form.is_active.label }}
+        </div>
+
+        <div class="form-check">
+          {{ form.open_in_new_tab() }}
+          {{ form.open_in_new_tab.label }}
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="admin-card">
+        <button type="submit" class="btn btn-primary btn-block btn-lg">{% if item %}Güncelle{% else %}Oluştur{% endif %}</button>
+      </div>
+    </div>
+  </div>
+</form>
+{% endblock %}

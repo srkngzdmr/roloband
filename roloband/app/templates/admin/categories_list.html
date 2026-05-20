@@ -1,0 +1,61 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Kategoriler{% endblock %}
+
+{% block content %}
+<div class="admin-header">
+  <div>
+    <h1 class="admin-page-title">Ürün Kategorileri</h1>
+    <p class="admin-page-subtitle">Hatve ölçüsüne göre ürün gruplarınız.</p>
+  </div>
+  <div class="admin-header-actions">
+    <a href="{{ url_for('admin.category_create') }}" class="btn btn-primary">+ Yeni Kategori</a>
+  </div>
+</div>
+
+<div class="admin-card admin-card-table">
+  {% if categories %}
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Sıra</th>
+          <th>Kategori</th>
+          <th>Slug</th>
+          <th>Hatve</th>
+          <th>Ürün Sayısı</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for cat in categories %}
+          <tr>
+            <td>{{ cat.order_index }}</td>
+            <td>
+              {% if cat.cover_image %}
+                <img src="{{ cat.cover_image }}" alt="" class="table-thumb">
+              {% endif %}
+              <strong>{{ cat.name }}</strong>
+            </td>
+            <td><code>/urunler/{{ cat.slug }}</code></td>
+            <td>{% if cat.pitch_mm %}{{ cat.pitch_mm }} mm{% else %}—{% endif %}</td>
+            <td>{{ cat.products|length }}</td>
+            <td class="actions-cell">
+              <a href="{{ url_for('public.category_detail', slug=cat.slug) }}" target="_blank" class="btn-icon" title="Görüntüle">↗</a>
+              <a href="{{ url_for('admin.category_edit', cat_id=cat.id) }}" class="btn-icon" title="Düzenle">✎</a>
+              <form method="POST" action="{{ url_for('admin.category_delete', cat_id=cat.id) }}" style="display:inline" onsubmit="return confirm('Bu kategoriyi silmek istediğine emin misin? Bu işlem geri alınamaz.');">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn-icon btn-icon-danger" title="Sil">🗑</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <div class="admin-empty">
+      <p>Henüz kategori eklenmemiş.</p>
+      <a href="{{ url_for('admin.category_create') }}" class="btn btn-primary">İlk kategoriyi ekle</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

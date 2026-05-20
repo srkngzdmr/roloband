@@ -1,0 +1,261 @@
+{% extends "public/base.html" %}
+
+{% block title %}{{ site_name }} | {{ settings.hero_title or 'Modüler Konveyör Sistemlerinde Çözüm Ortağınız' }}{% endblock %}
+
+{% block content %}
+
+{# ============================================================
+   HERO — TAM EKRAN VİDEO ARKAPLAN
+   ============================================================ #}
+<section class="hero">
+  <div class="hero-media">
+    {% if settings.hero_video_url %}
+      <video autoplay muted loop playsinline
+             {% if settings.hero_poster_image %}poster="{{ settings.hero_poster_image }}"{% endif %}>
+        <source src="{{ settings.hero_video_url }}" type="video/mp4">
+      </video>
+    {% elif settings.hero_poster_image %}
+      <img src="{{ settings.hero_poster_image }}" alt="ROLOBAND modüler bantlar">
+    {% else %}
+      {# Video yoksa fallback: dinamik gradient + SVG pattern #}
+      <div style="width:100%;height:100%;background:
+        radial-gradient(circle at 20% 30%, #06b6d4 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, #0ea5e9 0%, transparent 50%),
+        linear-gradient(135deg, #0c4a6e, #082f49);"></div>
+    {% endif %}
+  </div>
+
+  <div class="hero-overlay"></div>
+
+  <div class="container hero-content">
+    <span class="hero-eyebrow">
+      <span class="dot"></span>
+      İzmir / Türkiye • Üretici Firma
+    </span>
+    <h1>
+      {{ settings.hero_title or 'Modüler Konveyör Sistemlerinde' }}
+      <br>
+      <span class="accent">Çözüm Ortağınız</span>
+    </h1>
+    <p class="lead">
+      {{ settings.hero_subtitle or "İzmir Menderes'ten dünyaya. Gıda işleme makineleri için FDA ve EU onaylı, uzun ömürlü modüler bant çözümleri." }}
+    </p>
+    <div class="hero-actions">
+      <a href="{{ settings.hero_cta_url or url_for('public.products_index') }}" class="btn btn-primary">
+        {{ settings.hero_cta_text or 'Ürünlerimizi İnceleyin' }}
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+      <a href="{{ url_for('public.contact') }}" class="btn btn-outline-light">
+        Bize Ulaşın
+      </a>
+    </div>
+  </div>
+
+  <div class="hero-stats">
+    <div class="container">
+      <div class="hero-stat">
+        <div class="num"><span data-count="15" data-suffix="+">0</span></div>
+        <div class="label">Yıllık Tecrübe</div>
+      </div>
+      <div class="hero-stat">
+        <div class="num"><span data-count="50" data-suffix="+">0</span></div>
+        <div class="label">Ürün Modeli</div>
+      </div>
+      <div class="hero-stat">
+        <div class="num"><span data-count="200" data-suffix="+">0</span></div>
+        <div class="label">B2B Müşteri</div>
+      </div>
+      <div class="hero-stat">
+        <div class="num">FDA</div>
+        <div class="label">EU Onaylı</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{# ============================================================
+   GÜVEN ŞERİDİ
+   ============================================================ #}
+<section class="trust-strip" style="padding: 2rem 0;">
+  <div class="container">
+    <h4>Güvenilir Mühendislik • Sertifikalı Üretim</h4>
+    <div class="badges">
+      <div class="trust-badge">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+        FDA Onaylı
+      </div>
+      <div class="trust-badge">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
+        EU 10/2011
+      </div>
+      <div class="trust-badge">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22,4 12,14.01 9,11.01"/></svg>
+        Gıdaya Uygun POM/PP/PE
+      </div>
+      <div class="trust-badge">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2L3 7l9 5 9-5-9-5zM3 17l9 5 9-5M3 12l9 5 9-5"/></svg>
+        Modüler Yapı
+      </div>
+    </div>
+  </div>
+</section>
+
+{# ============================================================
+   KATEGORİLER (HATVE BAZLI)
+   ============================================================ #}
+<section>
+  <div class="container">
+    <div class="section-heading">
+      <span class="eyebrow">Ürün Yelpazemiz</span>
+      <h2>Hatve Ölçüsüne Göre Modüler Bantlar</h2>
+      <p>Her uygulama için doğru hatve — 12.7 mm dar dönüşten 50.8 mm ağır yüke kadar geniş ürün ailesi.</p>
+    </div>
+
+    <div class="categories-grid">
+      {% for cat in categories %}
+        <a href="{{ url_for('public.category_detail', slug=cat.slug) }}" class="category-card">
+          {% if cat.pitch_mm %}
+            <div class="pitch-badge">{{ cat.pitch_mm }} mm Hatve</div>
+          {% else %}
+            <div class="pitch-badge">Özel Seri</div>
+          {% endif %}
+          <h3>{{ cat.name }}</h3>
+          <p>{{ cat.short_description }}</p>
+          <span class="arrow">
+            İncele
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </span>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{# ============================================================
+   ÖNE ÇIKAN ÜRÜNLER
+   ============================================================ #}
+{% if featured_products %}
+<section style="background: var(--rb-bg);">
+  <div class="container">
+    <div class="section-heading">
+      <span class="eyebrow">Öne Çıkan Modeller</span>
+      <h2>Popüler Bant Serileri</h2>
+      <p>Makine üreticilerinin en çok tercih ettiği, kanıtlanmış modüler bant modelleri.</p>
+    </div>
+
+    <div class="product-grid">
+      {% for product in featured_products %}
+        <a href="{{ url_for('public.product_detail', slug=product.slug) }}" class="product-card">
+          <div class="image">
+            {% if product.cover_image %}
+              <img src="{{ product.cover_image }}" alt="{{ product.name }}" loading="lazy">
+            {% else %}
+              <div class="placeholder">{{ product.code or 'ROLO BAND' }}</div>
+            {% endif %}
+          </div>
+          <div class="body">
+            {% if product.code %}<div class="code">{{ product.code }}</div>{% endif %}
+            <h3>{{ product.name }}</h3>
+            <p class="desc">{{ product.short_description }}</p>
+            <div class="product-specs">
+              {% if product.pitch_mm %}<span class="spec-chip">{{ product.pitch_mm }}mm hatve</span>{% endif %}
+              {% if product.open_area_pct is not none %}<span class="spec-chip">%{{ product.open_area_pct|int }} açık</span>{% endif %}
+              {% if product.surface_type %}<span class="spec-chip">{{ product.surface_type }}</span>{% endif %}
+            </div>
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{# ============================================================
+   SEKTÖRLER
+   ============================================================ #}
+<section class="industries">
+  <div class="container">
+    <div class="section-heading">
+      <span class="eyebrow">Hizmet Verdiğimiz Alanlar</span>
+      <h2>Gıda Endüstrisinin Her Halkasında</h2>
+      <p>Kırmızı et hatlarından su ürünleri işlemeye, baharat üretiminden lojistik paketlemeye.</p>
+    </div>
+
+    <div class="industry-grid">
+      <div class="industry-card"><div class="icon">🥩</div><h4>Kırmızı Et</h4></div>
+      <div class="industry-card"><div class="icon">🐔</div><h4>Beyaz Et / Tavuk</h4></div>
+      <div class="industry-card"><div class="icon">🐟</div><h4>Su Ürünleri</h4></div>
+      <div class="industry-card"><div class="icon">🍞</div><h4>Unlu Mamuller</h4></div>
+      <div class="industry-card"><div class="icon">🥬</div><h4>Meyve / Sebze</h4></div>
+      <div class="industry-card"><div class="icon">🫒</div><h4>Zeytin & Turşu</h4></div>
+      <div class="industry-card"><div class="icon">🌶️</div><h4>Baharat</h4></div>
+      <div class="industry-card"><div class="icon">📦</div><h4>Paketleme & Lojistik</h4></div>
+    </div>
+  </div>
+</section>
+
+{# ============================================================
+   NEDEN ROLOBAND
+   ============================================================ #}
+<section class="features">
+  <div class="container">
+    <div class="section-heading">
+      <span class="eyebrow">Neden ROLOBAND?</span>
+      <h2>Makine İmalatçıları İçin Tasarlanmış</h2>
+      <p>Sadece bant tedariği değil, üretim hatlarınız için sürekli mühendislik desteği.</p>
+    </div>
+
+    <div class="feature-grid">
+      <div class="feature">
+        <div class="num">01</div>
+        <h3>Gıdaya Uygun Malzemeler</h3>
+        <p>POM, PP ve PE seçenekleri ile FDA ve EU 10/2011 standartlarında üretim. -70°C ile +105°C arası geniş çalışma aralığı.</p>
+      </div>
+      <div class="feature">
+        <div class="num">02</div>
+        <h3>Kolay Temizlik & Hijyen</h3>
+        <p>Çıplak ürün taşınan hatlar için "Çok İyi" temizlenebilirlik. Açık, kapalı ve süzgeçli yüzey alternatifleri.</p>
+      </div>
+      <div class="feature">
+        <div class="num">03</div>
+        <h3>Kesintisiz Tedarik</h3>
+        <p>İzmir merkezli stoklu üretim. Makine üreticisi müşterilerimize hızlı ve sürekli sevkiyat garantisi.</p>
+      </div>
+      <div class="feature">
+        <div class="num">04</div>
+        <h3>Mühendislik Desteği</h3>
+        <p>Her uygulamaya özel hatve ve yüzey önerisi. Dar dönüş, yüksek hız, ağır yük — her senaryoya çözüm.</p>
+      </div>
+      <div class="feature">
+        <div class="num">05</div>
+        <h3>Uzun Ömürlü Yapı</h3>
+        <p>Kendinden kilitli pim teknolojisi, yüksek çekme mukavemeti ve aşınma direnci ile uzun servis ömrü.</p>
+      </div>
+      <div class="feature">
+        <div class="num">06</div>
+        <h3>Geniş Aksesuar Yelpazesi</h3>
+        <p>Dişliler, profiller, sürtünme destekleri ve özel parçalar — komple konveyör çözümü tek bir tedarikçiden.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+{# ============================================================
+   CTA BANNER
+   ============================================================ #}
+<section>
+  <div class="container">
+    <div class="cta-banner">
+      <div>
+        <h2>Projeniz için doğru bandı bulalım</h2>
+        <p>Hattınızın koşullarına özel hatve, yüzey ve malzeme önerisi için mühendislik ekibimizle iletişime geçin.</p>
+      </div>
+      <div class="actions">
+        <a href="{{ url_for('public.contact') }}" class="btn btn-primary">Teklif İste</a>
+        <a href="{{ url_for('public.products_index') }}" class="btn btn-outline-light">Katalogu Görüntüle</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

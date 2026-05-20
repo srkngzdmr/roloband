@@ -1,0 +1,150 @@
+{% extends "public/base.html" %}
+
+{% block title %}İletişim - {{ site_name }}{% endblock %}
+{% block meta_description %}ROLOBAND ile iletişime geçin. Modüler konveyör bantları için teklif alın. İzmir Menderes'teki tesisimizden Türkiye geneline hizmet veriyoruz.{% endblock %}
+
+{% block content %}
+<section class="page-header">
+  <div class="container">
+    <nav class="breadcrumb">
+      <a href="{{ url_for('public.index') }}">Anasayfa</a>
+      <span class="breadcrumb-sep">/</span>
+      <span>İletişim</span>
+    </nav>
+    <h1 class="page-title">Bize Ulaşın</h1>
+    <p class="page-subtitle">Projeniz için uygun çözümü birlikte belirleyelim. Teknik ekibimiz 24 saat içinde size dönüş yapar.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="contact-grid">
+      <div class="contact-info">
+        <h2 class="section-subtitle">İletişim Bilgileri</h2>
+
+        <div class="contact-item">
+          <div class="contact-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+          </div>
+          <div>
+            <h3>Adres</h3>
+            <p>{{ settings.contact_address or 'Oğlananası Atatürk, 1. Cd. No:54, 35471 Menderes/İzmir' }}</p>
+          </div>
+        </div>
+
+        <div class="contact-item">
+          <div class="contact-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+          </div>
+          <div>
+            <h3>E-posta</h3>
+            <p><a href="mailto:{{ settings.contact_email or 'info@roloband.com' }}">{{ settings.contact_email or 'info@roloband.com' }}</a></p>
+          </div>
+        </div>
+
+        {% if settings.contact_phone %}
+        <div class="contact-item">
+          <div class="contact-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+            </svg>
+          </div>
+          <div>
+            <h3>Telefon</h3>
+            <p><a href="tel:{{ settings.contact_phone|replace(' ', '') }}">{{ settings.contact_phone }}</a></p>
+          </div>
+        </div>
+        {% endif %}
+
+        <div class="contact-item">
+          <div class="contact-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+            </svg>
+          </div>
+          <div>
+            <h3>Instagram</h3>
+            <p><a href="{{ settings.social_instagram or 'https://instagram.com/rolobandmoduler' }}" target="_blank" rel="noopener">@rolobandmoduler</a></p>
+          </div>
+        </div>
+
+        <div class="contact-hours">
+          <h3>Çalışma Saatleri</h3>
+          <p>Pazartesi - Cuma: 08:30 - 18:00<br>Cumartesi: 09:00 - 14:00</p>
+        </div>
+      </div>
+
+      <div class="contact-form-wrapper">
+        <h2 class="section-subtitle">Teklif Formu</h2>
+        <form method="POST" class="form-card" novalidate>
+          {{ form.hidden_tag() }}
+
+          <div class="form-row">
+            <div class="form-group">
+              {{ form.full_name.label }}
+              {{ form.full_name(class="form-input", placeholder="Adınız Soyadınız") }}
+              {% if form.full_name.errors %}<div class="form-error">{{ form.full_name.errors[0] }}</div>{% endif %}
+            </div>
+
+            <div class="form-group">
+              {{ form.company.label }}
+              {{ form.company(class="form-input", placeholder="Firma adı") }}
+              {% if form.company.errors %}<div class="form-error">{{ form.company.errors[0] }}</div>{% endif %}
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              {{ form.email.label }}
+              {{ form.email(class="form-input", placeholder="ornek@firma.com") }}
+              {% if form.email.errors %}<div class="form-error">{{ form.email.errors[0] }}</div>{% endif %}
+            </div>
+
+            <div class="form-group">
+              {{ form.phone.label }}
+              {{ form.phone(class="form-input", placeholder="+90 555 555 55 55") }}
+              {% if form.phone.errors %}<div class="form-error">{{ form.phone.errors[0] }}</div>{% endif %}
+            </div>
+          </div>
+
+          <div class="form-group">
+            {{ form.subject.label }}
+            {{ form.subject(class="form-input", placeholder="Talebinizin konusu") }}
+            {% if form.subject.errors %}<div class="form-error">{{ form.subject.errors[0] }}</div>{% endif %}
+          </div>
+
+          <div class="form-group">
+            {{ form.message.label }}
+            {{ form.message(class="form-textarea", rows=6, placeholder="Uygulamanız, hatve tercihi, bant ölçüsü, malzeme isteği gibi detayları yazabilirsiniz.") }}
+            {% if form.message.errors %}<div class="form-error">{{ form.message.errors[0] }}</div>{% endif %}
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-lg btn-block">Gönder</button>
+          <p class="form-note">Mesajınız işleme alındıktan sonra teknik ekibimiz en geç 24 saat içinde size geri dönüş yapacaktır.</p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="map-section">
+  <div class="map-embed">
+    <iframe
+      src="https://www.google.com/maps?q=Oğlananası+Atatürk+1.+Cd.+No:54+Menderes+İzmir&output=embed"
+      width="100%"
+      height="450"
+      style="border:0;"
+      allowfullscreen=""
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"></iframe>
+  </div>
+</section>
+{% endblock %}

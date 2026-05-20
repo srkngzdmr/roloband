@@ -1,0 +1,57 @@
+{% extends "public/base.html" %}
+{% block title %}{{ category.name }} | {{ site_name }}{% endblock %}
+
+{% block content %}
+<header class="page-header">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="/">Anasayfa</a> /
+      <a href="{{ url_for('public.products_index') }}">Ürünler</a> /
+      {{ category.name }}
+    </div>
+    <h1>{{ category.name }}</h1>
+    {% if category.short_description %}<p>{{ category.short_description }}</p>{% endif %}
+  </div>
+</header>
+
+<section>
+  <div class="container">
+    {% if category.description %}
+      <div style="max-width: 800px; margin: 0 auto 3rem; color: var(--rb-text-2);">
+        {{ category.description | safe }}
+      </div>
+    {% endif %}
+
+    {% if products %}
+      <div class="product-grid">
+        {% for product in products %}
+          <a href="{{ url_for('public.product_detail', slug=product.slug) }}" class="product-card">
+            <div class="image">
+              {% if product.cover_image %}
+                <img src="{{ product.cover_image }}" alt="{{ product.name }}" loading="lazy">
+              {% else %}
+                <div class="placeholder">{{ product.code or 'ROLO BAND' }}</div>
+              {% endif %}
+            </div>
+            <div class="body">
+              {% if product.code %}<div class="code">{{ product.code }}</div>{% endif %}
+              <h3>{{ product.name }}</h3>
+              <p class="desc">{{ product.short_description }}</p>
+              <div class="product-specs">
+                {% if product.pitch_mm %}<span class="spec-chip">{{ product.pitch_mm }}mm</span>{% endif %}
+                {% if product.open_area_pct is not none %}<span class="spec-chip">%{{ product.open_area_pct|int }} açık</span>{% endif %}
+                {% if product.surface_type %}<span class="spec-chip">{{ product.surface_type }}</span>{% endif %}
+                {% if product.materials %}<span class="spec-chip">{{ product.materials }}</span>{% endif %}
+              </div>
+            </div>
+          </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div style="text-align:center;padding:3rem;color:var(--rb-text-2);">
+        Bu kategoride henüz ürün bulunmuyor.
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

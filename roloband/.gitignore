@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Ortam
+.env
+venv/
+env/
+.venv/
+
+# Veritabanı
+instance/
+*.db
+*.sqlite3
+
+# Yüklemeler (kullanıcı medya dosyaları)
+app/static/uploads/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Migrations (opsiyonel - takım çalışması yapıyorsan sil bu satırı)
+migrations/versions/

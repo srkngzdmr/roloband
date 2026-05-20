@@ -1,0 +1,80 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Genel Ayarlar{% endblock %}
+
+{% block content %}
+<div class="admin-header">
+  <div>
+    <h1 class="admin-page-title">Genel Site Ayarları</h1>
+    <p class="admin-page-subtitle">İletişim bilgileri, sosyal medya ve footer içeriği.</p>
+  </div>
+</div>
+
+<form method="POST" class="admin-form">
+  {{ form.hidden_tag() }}
+
+  <div class="admin-grid-form">
+    <div>
+      <div class="admin-card">
+        <h3 class="admin-card-title">İletişim Bilgileri</h3>
+
+        <div class="form-group">
+          {{ form.contact_email.label }}
+          {{ form.contact_email(class="form-input", placeholder="info@roloband.com") }}
+        </div>
+
+        <div class="form-group">
+          {{ form.contact_phone.label }}
+          {{ form.contact_phone(class="form-input", placeholder="+90 232 ...") }}
+        </div>
+
+        <div class="form-group">
+          {{ form.contact_address.label }}
+          {{ form.contact_address(class="form-textarea", rows=3, placeholder="Oğlananası Atatürk, 1. Cd. No:54, 35471 Menderes/İzmir") }}
+        </div>
+
+        <div class="form-group">
+          {{ form.contact_map_embed.label }}
+          {{ form.contact_map_embed(class="form-textarea", rows=4, placeholder="<iframe src='https://www.google.com/maps/embed?...'></iframe>") }}
+          <div class="form-hint">Google Maps "Yer paylaş" → "Harita yerleştir" → iframe kodunu yapıştır.</div>
+        </div>
+      </div>
+
+      <div class="admin-card">
+        <h3 class="admin-card-title">Sosyal Medya</h3>
+
+        <div class="form-group">
+          {{ form.social_instagram.label }}
+          {{ form.social_instagram(class="form-input", placeholder="https://instagram.com/rolobandmoduler") }}
+        </div>
+
+        <div class="form-group">
+          {{ form.social_linkedin.label }}
+          {{ form.social_linkedin(class="form-input", placeholder="https://linkedin.com/company/roloband") }}
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="admin-card">
+        <h3 class="admin-card-title">Footer İçeriği</h3>
+
+        <div class="form-group">
+          {{ form.footer_about.label }}
+          {{ form.footer_about(class="form-textarea", rows=5, placeholder="ROLO BAND, İzmir Menderes'ten gıda işleme makinesi imalatçılarına FDA & EU uyumlu modüler konveyör bantları üretir.") }}
+          <div class="form-hint">Footer'da firma logosu altında çıkacak kısa metin.</div>
+        </div>
+
+        <div class="form-group">
+          {{ form.certifications.label }}
+          {{ form.certifications(class="form-input", placeholder="FDA, EU 10/2011, ISO 9001") }}
+        </div>
+      </div>
+
+      <div class="admin-card">
+        <button type="submit" class="btn btn-primary btn-block btn-lg">Kaydet</button>
+      </div>
+    </div>
+  </div>
+</form>
+{% endblock %}

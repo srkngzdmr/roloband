@@ -1,0 +1,14 @@
+{% extends "public/base.html" %}
+
+{% block title %}Sunucu Hatası - {{ site_name }}{% endblock %}
+
+{% block content %}
+<section class="error-page">
+  <div class="error-content">
+    <div class="error-code">500</div>
+    <h1 class="error-title">Sunucu Hatası</h1>
+    <p class="error-message">Sistemde geçici bir sorun oluştu. Ekibimiz konuyla ilgili bilgilendirildi. Lütfen kısa bir süre sonra tekrar deneyiniz.</p>
+    <a href="{{ url_for('public.index') }}" class="btn btn-primary">Anasayfaya Dön</a>
+  </div>
+</section>
+{% endblock %}

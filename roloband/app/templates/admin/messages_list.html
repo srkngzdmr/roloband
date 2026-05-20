@@ -1,0 +1,57 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Mesajlar{% endblock %}
+
+{% block content %}
+<div class="admin-header">
+  <div>
+    <h1 class="admin-page-title">İletişim Formu Mesajları</h1>
+    <p class="admin-page-subtitle">Sitemden gelen teklif talepleri ve sorular.</p>
+  </div>
+</div>
+
+<div class="admin-card admin-card-table">
+  {% if messages %}
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Ad / Firma</th>
+          <th>Konu</th>
+          <th>İletişim</th>
+          <th>Tarih</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for msg in messages %}
+          <tr class="{% if not msg.is_read %}unread-row{% endif %}">
+            <td>{% if not msg.is_read %}<span class="dot-unread" title="Okunmadı"></span>{% endif %}</td>
+            <td>
+              <strong>{{ msg.full_name }}</strong>
+              {% if msg.company %}<div class="muted">{{ msg.company }}</div>{% endif %}
+            </td>
+            <td>{{ msg.subject or '—' }}</td>
+            <td>
+              <div><a href="mailto:{{ msg.email }}">{{ msg.email }}</a></div>
+              {% if msg.phone %}<div class="muted">{{ msg.phone }}</div>{% endif %}
+            </td>
+            <td>{{ msg.created_at.strftime('%d.%m.%Y %H:%M') }}</td>
+            <td class="actions-cell">
+              <a href="{{ url_for('admin.message_detail', msg_id=msg.id) }}" class="btn btn-outline btn-sm">Aç</a>
+              <form method="POST" action="{{ url_for('admin.message_delete', msg_id=msg.id) }}" style="display:inline" onsubmit="return confirm('Bu mesajı silmek istediğine emin misin?');">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn-icon btn-icon-danger" title="Sil">🗑</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <div class="admin-empty">
+      <p>Henüz mesaj yok.</p>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

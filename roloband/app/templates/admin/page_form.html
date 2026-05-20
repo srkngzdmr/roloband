@@ -1,0 +1,100 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{% if page %}{{ page.title }} Düzenle{% else %}Yeni Sayfa{% endif %}{% endblock %}
+
+{% block content %}
+<div class="admin-header">
+  <div>
+    <h1 class="admin-page-title">{% if page %}Sayfa Düzenle{% else %}Yeni Sayfa{% endif %}</h1>
+    <p class="admin-page-subtitle">İçeriği zengin metin editöründe düzenleyebilirsin.</p>
+  </div>
+  <div class="admin-header-actions">
+    <a href="{{ url_for('admin.pages_list') }}" class="btn btn-outline">← Geri</a>
+  </div>
+</div>
+
+<form method="POST" enctype="multipart/form-data" class="admin-form">
+  {{ form.hidden_tag() }}
+
+  <div class="admin-grid-form">
+    <div>
+      <div class="admin-card">
+        <div class="form-group">
+          {{ form.title.label }}
+          {{ form.title(class="form-input", placeholder="Sayfa başlığı") }}
+          {% if form.title.errors %}<div class="form-error">{{ form.title.errors[0] }}</div>{% endif %}
+        </div>
+
+        <div class="form-group">
+          {{ form.slug.label }}
+          {{ form.slug(class="form-input", placeholder="otomatik-uretilecek") }}
+          <div class="form-hint">Boş bırakırsan başlıktan otomatik üretilir.</div>
+        </div>
+
+        <div class="form-group">
+          {{ form.excerpt.label }}
+          {{ form.excerpt(class="form-textarea", rows=2, placeholder="Sayfanın kısa özeti (SEO ve kart görünümü için)") }}
+        </div>
+
+        <div class="form-group">
+          {{ form.content.label }}
+          {{ form.content(class="form-textarea") }}
+          {{ ckeditor.config(name='content') }}
+        </div>
+      </div>
+
+      <div class="admin-card">
+        <h3 class="admin-card-title">SEO Ayarları</h3>
+        <div class="form-group">
+          {{ form.meta_title.label }}
+          {{ form.meta_title(class="form-input", placeholder="Tarayıcı sekmesinde görünen başlık") }}
+        </div>
+        <div class="form-group">
+          {{ form.meta_description.label }}
+          {{ form.meta_description(class="form-textarea", rows=2, placeholder="Google sonuçlarında görünen açıklama (155 karakter)") }}
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="admin-card">
+        <h3 class="admin-card-title">Yayın</h3>
+        <div class="form-check">
+          {{ form.is_published() }}
+          {{ form.is_published.label }}
+        </div>
+        <div class="form-check">
+          {{ form.show_in_menu() }}
+          {{ form.show_in_menu.label }}
+        </div>
+        <div class="form-group" style="margin-top: 1rem;">
+          {{ form.menu_order.label }}
+          {{ form.menu_order(class="form-input", type="number", min=0) }}
+        </div>
+      </div>
+
+      <div class="admin-card">
+        <h3 class="admin-card-title">Kapak Görseli</h3>
+        {% if page and page.cover_image %}
+          <div class="current-image">
+            <img src="{{ page.cover_image }}" alt="">
+            <div class="muted">Mevcut görsel</div>
+          </div>
+        {% endif %}
+        <div class="form-group">
+          {{ form.cover_image_file.label }}
+          {{ form.cover_image_file(class="form-input-file") }}
+          <div class="form-hint">JPG, PNG, WebP — Max 10MB</div>
+        </div>
+      </div>
+
+      <div class="admin-card">
+        <button type="submit" class="btn btn-primary btn-block btn-lg">{% if page %}Güncelle{% else %}Oluştur{% endif %}</button>
+        {% if page %}
+          <a href="{{ url_for('public.dynamic_page', slug=page.slug) }}" target="_blank" class="btn btn-outline btn-block" style="margin-top: 0.5rem;">Önizleme</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</form>
+{% endblock %}

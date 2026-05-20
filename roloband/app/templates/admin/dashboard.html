@@ -1,0 +1,104 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Gösterge Paneli{% endblock %}
+
+{% block content %}
+<div class="admin-header">
+  <div>
+    <h1 class="admin-page-title">Hoş geldin, {{ current_user.full_name or current_user.full_name or current_user.email }}</h1>
+    <p class="admin-page-subtitle">Sitenin genel durumunu buradan yönetebilirsin.</p>
+  </div>
+  <div class="admin-header-actions">
+    <a href="{{ url_for('public.index') }}" target="_blank" class="btn btn-outline">Siteyi Görüntüle</a>
+  </div>
+</div>
+
+<div class="admin-stats">
+  <a href="{{ url_for('admin.products_list') }}" class="admin-stat-card">
+    <div class="admin-stat-icon" style="background: linear-gradient(135deg, #0ea5e9, #0369a1);">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+    </div>
+    <div>
+      <div class="admin-stat-value">{{ stats.products }}</div>
+      <div class="admin-stat-label">Ürün</div>
+    </div>
+  </a>
+
+  <a href="{{ url_for('admin.categories_list') }}" class="admin-stat-card">
+    <div class="admin-stat-icon" style="background: linear-gradient(135deg, #6366f1, #4338ca);">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+    </div>
+    <div>
+      <div class="admin-stat-value">{{ stats.categories }}</div>
+      <div class="admin-stat-label">Kategori</div>
+    </div>
+  </a>
+
+  <a href="{{ url_for('admin.pages_list') }}" class="admin-stat-card">
+    <div class="admin-stat-icon" style="background: linear-gradient(135deg, #14b8a6, #0f766e);">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+    </div>
+    <div>
+      <div class="admin-stat-value">{{ stats.pages }}</div>
+      <div class="admin-stat-label">Sayfa</div>
+    </div>
+  </a>
+
+  <a href="{{ url_for('admin.messages_list') }}" class="admin-stat-card">
+    <div class="admin-stat-icon" style="background: linear-gradient(135deg, #f59e0b, #b45309);">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+    </div>
+    <div>
+      <div class="admin-stat-value">{{ stats.unread_messages }}</div>
+      <div class="admin-stat-label">Okunmamış Mesaj</div>
+    </div>
+  </a>
+</div>
+
+<div class="admin-grid-2">
+  <div class="admin-card">
+    <div class="admin-card-header">
+      <h2>Son Mesajlar</h2>
+      <a href="{{ url_for('admin.messages_list') }}" class="admin-card-link">Tümü →</a>
+    </div>
+    {% if recent_messages %}
+      <ul class="admin-list">
+        {% for msg in recent_messages %}
+          <li class="admin-list-item {% if not msg.is_read %}unread{% endif %}">
+            <a href="{{ url_for('admin.message_detail', msg_id=msg.id) }}">
+              <div class="admin-list-title">{{ msg.full_name }} {% if msg.company %}<small>({{ msg.company }})</small>{% endif %}</div>
+              <div class="admin-list-meta">{{ msg.subject or 'Konu yok' }} · {{ msg.created_at.strftime('%d.%m.%Y %H:%M') }}</div>
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="admin-empty">Henüz mesaj yok.</p>
+    {% endif %}
+  </div>
+
+  <div class="admin-card">
+    <div class="admin-card-header">
+      <h2>Hızlı İşlemler</h2>
+    </div>
+    <div class="admin-quick-actions">
+      <a href="{{ url_for('admin.product_create') }}" class="quick-action">
+        <span class="quick-action-icon">+</span>
+        Yeni Ürün Ekle
+      </a>
+      <a href="{{ url_for('admin.page_create') }}" class="quick-action">
+        <span class="quick-action-icon">+</span>
+        Yeni Sayfa Ekle
+      </a>
+      <a href="{{ url_for('admin.category_create') }}" class="quick-action">
+        <span class="quick-action-icon">+</span>
+        Yeni Kategori Ekle
+      </a>
+      <a href="{{ url_for('admin.settings_hero') }}" class="quick-action">
+        <span class="quick-action-icon">▶</span>
+        Hero Videoyu Değiştir
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}
