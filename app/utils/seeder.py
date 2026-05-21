@@ -1,3 +1,5 @@
+from __future__ import annotations
+from typing import Dict, Optional
 """Katalog verilerini DB'ye yükleyen seeder."""
 from app.extensions import db
 from app.models import ProductCategory, Product, SiteSetting, MenuItem, Page
@@ -224,7 +226,7 @@ def run_seed() -> None:
             db.session.add(page)
 
     # Kategoriler
-    cat_by_pitch: dict[float | None, ProductCategory] = {}
+    cat_by_pitch: Dict[Optional[float], ProductCategory] = {}
     for c in CATEGORIES:
         existing = ProductCategory.query.filter_by(name=c["name"]).first()
         if existing:

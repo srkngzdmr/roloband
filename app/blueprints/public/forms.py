@@ -1,3 +1,4 @@
+from __future__ import annotations
 """Public form'lar."""
 from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, SubmitField

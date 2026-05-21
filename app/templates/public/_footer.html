@@ -2,15 +2,12 @@
   <div class="container">
     <div class="footer-grid">
       <div class="footer-brand">
-        <div class="brand">
-          <span class="brand-mark">
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M3 8h18M3 12h18M3 16h18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-            </svg>
-          </span>
-          <span>ROLO<span style="color: var(--rb-primary);">BAND</span></span>
-        </div>
-        <p>{{ settings.footer_about or 'Gıda işleme sektörüne makine üreten imalatçıların güvenilir modüler bant tedarikçisi.' }}</p>
+        <a href="{{ url_for('public.index') }}">
+          <img src="{{ url_for('static', filename='img/roloband-logo.png') }}"
+               alt="ROLOBAND"
+               class="footer-brand-logo">
+        </a>
+        <p>{{ tdb(settings.footer_about) or t('footer_about_default') }}</p>
         <div class="social-links" style="margin-top: 1.5rem;">
           {% if settings.social_instagram %}
             <a href="{{ settings.social_instagram }}" target="_blank" rel="noopener" aria-label="Instagram">
@@ -26,32 +23,33 @@
       </div>
 
       <div class="footer-col">
-        <h5>Ürünler</h5>
+        <h5>{{ t('footer_products') }}</h5>
         <ul>
-          <li><a href="{{ url_for('public.products_index') }}">Tüm Ürünler</a></li>
-          <li><a href="{{ url_for('public.products_index') }}">12.7 mm Hatve</a></li>
-          <li><a href="{{ url_for('public.products_index') }}">25.4 mm Hatve</a></li>
-          <li><a href="{{ url_for('public.products_index') }}">50.8 mm Hatve</a></li>
-          <li><a href="{{ url_for('public.products_index') }}">Radius Bantlar</a></li>
+          <li><a href="{{ url_for('public.products_index') }}">{{ t('footer_all_products') }}</a></li>
+          <li><a href="{{ url_for('public.products_index') }}">12.7 {{ t('footer_hatve_suffix') }}</a></li>
+          <li><a href="{{ url_for('public.products_index') }}">25.4 {{ t('footer_hatve_suffix') }}</a></li>
+          <li><a href="{{ url_for('public.products_index') }}">50.8 {{ t('footer_hatve_suffix') }}</a></li>
+          <li><a href="{{ url_for('public.products_index') }}">{{ t('footer_radius_belts') }}</a></li>
         </ul>
       </div>
 
       <div class="footer-col">
-        <h5>Kurumsal</h5>
+        <h5>{{ t('footer_corporate') }}</h5>
         <ul>
-          <li><a href="/hakkimizda">Hakkımızda</a></li>
-          <li><a href="/sektorler">Sektörler</a></li>
-          <li><a href="/kalite">Kalite & Sertifikalar</a></li>
-          <li><a href="{{ url_for('public.contact') }}">İletişim</a></li>
+          <li><a href="/hakkimizda">{{ t('footer_about_link') }}</a></li>
+          <li><a href="/sektorler">{{ t('footer_sectors_link') }}</a></li>
+          <li><a href="/kalite">{{ t('footer_quality_link') }}</a></li>
+          <li><a href="{{ url_for('public.contact') }}">{{ t('footer_contact_link') }}</a></li>
+          <li><a href="/kvkk">KVKK</a></li>
         </ul>
       </div>
 
       <div class="footer-col footer-contact">
-        <h5>İletişim</h5>
+        <h5>{{ t('footer_contact_title') }}</h5>
         {% if settings.contact_address %}
         <div class="info-row">
           <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-          <span>{{ settings.contact_address }}</span>
+          <span>{{ tdb(settings.contact_address) }}</span>
         </div>
         {% endif %}
         {% if settings.contact_email %}
@@ -70,8 +68,8 @@
     </div>
 
     <div class="footer-bottom">
-      <div>© {{ 2026 }} ROLOBAND. Tüm hakları saklıdır.</div>
-      <div>{{ settings.certifications or 'FDA, EU 10/2011' }} Onaylı Üretim</div>
+      <div>© {{ 2026 }} ROLOBAND. {{ t('footer_rights') }}</div>
+      <div>{{ settings.certifications or 'FDA, EU 10/2011' }} {{ t('footer_cert_suffix') }}</div>
     </div>
   </div>
 </footer>

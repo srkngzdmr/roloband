@@ -1,3 +1,4 @@
+from __future__ import annotations
 """ROLOBAND uygulama giriş noktası."""
 from app import create_app
 

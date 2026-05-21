@@ -1,3 +1,5 @@
+from __future__ import annotations
+from typing import List, Optional
 """ROLOBAND veritabanı modelleri."""
 from datetime import datetime
 from flask_login import UserMixin
@@ -43,6 +45,11 @@ class Page(db.Model):
     content = db.Column(db.Text)  # CKEditor HTML
     excerpt = db.Column(db.String(300))
     cover_image = db.Column(db.String(300))
+
+    # i18n — English overrides
+    title_en = db.Column(db.String(200))
+    excerpt_en = db.Column(db.String(300))
+    content_en = db.Column(db.Text)
 
     # SEO
     meta_title = db.Column(db.String(200))
@@ -119,6 +126,10 @@ class Product(db.Model):
     description = db.Column(db.Text)  # CKEditor
     usage_areas = db.Column(db.Text)  # CKEditor
 
+    # i18n — English overrides
+    description_en = db.Column(db.Text)
+    usage_areas_en = db.Column(db.Text)
+
     # Teknik özellikler
     pitch_mm = db.Column(db.Float)            # 12.7
     thickness_mm = db.Column(db.Float)        # 10
@@ -156,7 +167,7 @@ class Product(db.Model):
         self.slug = slug
 
     @property
-    def gallery_list(self) -> list[str]:
+    def gallery_list(self) -> List[str]:
         if not self.gallery:
             return []
         return [g.strip() for g in self.gallery.split(",") if g.strip()]
@@ -194,7 +205,7 @@ class SiteSetting(db.Model):
     group_name = db.Column(db.String(50), default="general")  # general | hero | contact | social
 
     @classmethod
-    def get(cls, key: str, default: str | None = None) -> str | None:
+    def get(cls, key: str, default: Optional[str] = None) -> Optional[str]:
         row = cls.query.filter_by(key=key).first()
         return row.value if row and row.value else default
 
@@ -235,7 +246,7 @@ class MenuItem(db.Model):
     )
 
     @classmethod
-    def get_main_menu(cls) -> list["MenuItem"]:
+    def get_main_menu(cls) -> List["MenuItem"]:
         return (
             cls.query.filter_by(parent_id=None, is_active=True)
             .order_by(cls.order_index.asc())

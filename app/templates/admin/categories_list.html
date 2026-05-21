@@ -38,7 +38,7 @@
             </td>
             <td><code>/urunler/{{ cat.slug }}</code></td>
             <td>{% if cat.pitch_mm %}{{ cat.pitch_mm }} mm{% else %}—{% endif %}</td>
-            <td>{{ cat.products|length }}</td>
+            <td>{{ cat.products.count() }}</td>
             <td class="actions-cell">
               <a href="{{ url_for('public.category_detail', slug=cat.slug) }}" target="_blank" class="btn-icon" title="Görüntüle">↗</a>
               <a href="{{ url_for('admin.category_edit', cat_id=cat.id) }}" class="btn-icon" title="Düzenle">✎</a>

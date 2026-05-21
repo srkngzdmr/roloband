@@ -1,3 +1,4 @@
+from __future__ import annotations
 """Flask CLI komutları: db, seed, create-admin."""
 import os
 import click

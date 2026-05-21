@@ -1,24 +1,32 @@
 <header class="site-header">
   <div class="container">
     <a href="{{ url_for('public.index') }}" class="brand">
-      <span class="brand-mark">
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M3 8h18M3 12h18M3 16h18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-          <circle cx="7" cy="8" r="1.2" fill="currentColor"/>
-          <circle cx="17" cy="16" r="1.2" fill="currentColor"/>
-        </svg>
-      </span>
-      <span>ROLO<span style="color: var(--rb-primary-dark);">BAND</span></span>
+      <img src="{{ url_for('static', filename='img/roloband-logo.png') }}"
+           alt="ROLOBAND"
+           class="brand-logo"
+           width="160"
+           height="48">
     </a>
 
     <nav class="main-nav" id="mainNav">
       {% for item in main_menu %}
-        <a href="{{ item.url }}"{% if item.open_in_new_tab %} target="_blank" rel="noopener"{% endif %}>{{ item.label }}</a>
+        <a href="{{ item.url }}"{% if item.open_in_new_tab %} target="_blank" rel="noopener"{% endif %}>{{ tdb(item.label) }}</a>
       {% endfor %}
-      <a href="{{ url_for('public.contact') }}" class="nav-cta">Teklif Al</a>
+      <a href="{{ url_for('public.contact') }}" class="nav-cta">{{ t('nav_cta') }}</a>
     </nav>
 
-    <button class="menu-toggle" aria-label="Menü">
+    <div class="lang-switcher">
+      <a href="/set-lang/tr" class="lang-btn{% if current_lang == 'tr' %} active{% endif %}" title="Türkçe">
+        <img src="https://flagcdn.com/w20/tr.png" alt="TR">
+        <span>TR</span>
+      </a>
+      <a href="/set-lang/en" class="lang-btn{% if current_lang == 'en' %} active{% endif %}" title="English">
+        <img src="https://flagcdn.com/w20/gb.png" alt="EN">
+        <span>EN</span>
+      </a>
+    </div>
+
+    <button class="menu-toggle" aria-label="{{ t('nav_menu_label') }}">
       <span></span><span></span><span></span>
     </button>
   </div>

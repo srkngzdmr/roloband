@@ -5,7 +5,7 @@
 {% block content %}
 <div class="admin-header">
   <div>
-    <h1 class="admin-page-title">Hoş geldin, {{ current_user.full_name or current_user.full_name or current_user.email }}</h1>
+    <h1 class="admin-page-title">Hoş geldin, {{ current_user.full_name or current_user.email }}</h1>
     <p class="admin-page-subtitle">Sitenin genel durumunu buradan yönetebilirsin.</p>
   </div>
   <div class="admin-header-actions">
@@ -53,6 +53,27 @@
       <div class="admin-stat-label">Okunmamış Mesaj</div>
     </div>
   </a>
+</div>
+
+<!-- AI Lead Agent Kartı -->
+<div class="admin-card" style="margin-bottom:24px;background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);border:1px solid rgba(59,130,246,0.25);">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:20px 24px;gap:16px;flex-wrap:wrap;">
+    <div style="display:flex;align-items:center;gap:16px;">
+      <div style="width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#3b82f6,#06b6d4);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 16px rgba(59,130,246,0.35);">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/><circle cx="19" cy="7" r="2.5" fill="#4ade80" stroke="none"/></svg>
+      </div>
+      <div>
+        <div style="font-size:16px;font-weight:700;color:#f1f5f9;margin-bottom:3px;">AI Lead Agent</div>
+        <div style="font-size:12px;color:#64748b;">Yapay zeka destekli B2B müşteri araştırma ve lead yönetimi</div>
+      </div>
+    </div>
+    <a href="{{ url_for('admin.agent_page') }}" target="_blank"
+       style="display:inline-flex;align-items:center;gap:8px;padding:10px 20px;background:linear-gradient(135deg,#3b82f6,#06b6d4);color:#fff;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none;white-space:nowrap;box-shadow:0 2px 12px rgba(59,130,246,0.4);transition:opacity .2s;"
+       onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5,3 19,12 5,21"/></svg>
+      Uygulamayı Aç
+    </a>
+  </div>
 </div>
 
 <div class="admin-grid-2">

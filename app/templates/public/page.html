@@ -1,45 +1,55 @@
 {% extends "public/base.html" %}
 
-{% block title %}{{ page.meta_title or page.title }} - {{ site_name }}{% endblock %}
-{% block meta_description %}{{ page.meta_description or page.excerpt or '' }}{% endblock %}
+{% set page_title   = page.title_en   if current_lang == 'en' and page.title_en   else page.title %}
+{% set page_excerpt = page.excerpt_en if current_lang == 'en' and page.excerpt_en else page.excerpt %}
+{% set page_content = page.content_en if current_lang == 'en' and page.content_en else page.content %}
+
+{% block title %}{{ page.meta_title or page_title }} - {{ site_name }}{% endblock %}
+{% block meta_description %}{{ page.meta_description or page_excerpt or '' }}{% endblock %}
 
 {% block content %}
 <section class="page-header">
   <div class="container">
     <nav class="breadcrumb">
-      <a href="{{ url_for('public.index') }}">Anasayfa</a>
+      <a href="{{ url_for('public.index') }}">{{ t('breadcrumb_home') }}</a>
       <span class="breadcrumb-sep">/</span>
-      <span>{{ page.title }}</span>
+      <span>{{ page_title }}</span>
     </nav>
-    <h1 class="page-title">{{ page.title }}</h1>
-    {% if page.excerpt %}
-      <p class="page-subtitle">{{ page.excerpt }}</p>
+    <h1 class="page-title">{{ page_title }}</h1>
+    {% if page_excerpt %}
+      <p class="page-subtitle">{{ page_excerpt }}</p>
     {% endif %}
   </div>
 </section>
 
 {% if page.cover_image %}
-<section class="page-cover">
+<section class="urun-showcase">
   <div class="container">
-    <img src="{{ page.cover_image }}" alt="{{ page.title }}" class="page-cover-image">
+    <img src="{{ page.cover_image }}" alt="{{ page_title }}"
+         style="width:100%;max-height:480px;object-fit:cover;border-radius:16px;box-shadow:0 20px 60px rgba(29,78,216,.25);display:block;">
   </div>
 </section>
 {% endif %}
 
-<section class="section">
-  <div class="container">
+<section class="page-content-section section" style="padding: 4rem 0;">
+  <div class="container" data-reveal>
     <article class="page-content">
-      {{ page.content|safe }}
+      {{ page_content|safe }}
     </article>
   </div>
 </section>
 
-<section class="cta-banner">
+<section style="background:#050d1f; padding-bottom: 5rem;">
   <div class="container">
-    <div class="cta-content">
-      <h2>Projeniz için doğru bandı birlikte seçelim</h2>
-      <p>Uygulamanıza özel teknik destek ve hızlı teklif için iletişime geçin.</p>
-      <a href="{{ url_for('public.contact') }}" class="btn btn-light btn-lg">Teklif Al</a>
+    <div class="cta-banner" data-reveal>
+      <div>
+        <h2>{{ t('cta_title') }}</h2>
+        <p>{{ t('cta_desc') }}</p>
+      </div>
+      <div class="actions">
+        <a href="{{ url_for('public.contact') }}" class="btn btn-primary">{{ t('nav_cta') }}</a>
+        <a href="{{ url_for('public.products_index') }}" class="btn btn-outline-light">{{ t('cta_catalog') }}</a>
+      </div>
     </div>
   </div>
 </section>

@@ -6,14 +6,14 @@
 <div class="admin-header">
   <div>
     <h1 class="admin-page-title">{% if page %}Sayfa Düzenle{% else %}Yeni Sayfa{% endif %}</h1>
-    <p class="admin-page-subtitle">İçeriği zengin metin editöründe düzenleyebilirsin.</p>
+    <p class="admin-page-subtitle">İçeriği görsel editörde veya ham HTML kodu olarak düzenleyebilirsin.</p>
   </div>
   <div class="admin-header-actions">
     <a href="{{ url_for('admin.pages_list') }}" class="btn btn-outline">← Geri</a>
   </div>
 </div>
 
-<form method="POST" enctype="multipart/form-data" class="admin-form">
+<form method="POST" enctype="multipart/form-data" class="admin-form" id="page-form">
   {{ form.hidden_tag() }}
 
   <div class="admin-grid-form">
@@ -37,9 +37,33 @@
         </div>
 
         <div class="form-group">
-          {{ form.content.label }}
-          {{ form.content(class="form-textarea") }}
-          {{ ckeditor.config(name='content') }}
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0.5rem;">
+            {{ form.content.label }}
+            <button type="button" id="toggle-editor-btn"
+              onclick="toggleEditorMode()"
+              style="font-size:0.8rem; padding:0.3rem 0.8rem; border:1px solid #0ea5e9; color:#0ea5e9; background:transparent; border-radius:6px; cursor:pointer; display:flex; align-items:center; gap:0.3rem;">
+              <span id="toggle-icon">&lt;/&gt;</span>
+              <span id="toggle-label">HTML Kodu</span>
+            </button>
+          </div>
+
+          <!-- CKEditor modu -->
+          <div id="ckeditor-wrapper">
+            {{ form.content(class="form-textarea") }}
+            {{ ckeditor.config(name='content') }}
+          </div>
+
+          <!-- Ham HTML modu -->
+          <div id="html-source-wrapper" style="display:none;">
+            <textarea id="html-source-editor"
+              style="width:100%; min-height:450px; font-family:'Courier New',monospace; font-size:0.85rem;
+                     background:#1e1e1e; color:#d4d4d4; border:1px solid #333; border-radius:6px;
+                     padding:1rem; resize:vertical; line-height:1.5; tab-size:2;"
+              placeholder="HTML kodunuzu buraya yapıştırın..."></textarea>
+            <div style="margin-top:0.5rem; font-size:0.78rem; color:#64748b;">
+              💡 Ham HTML kodunu buraya yapıştırabilir veya düzenleyebilirsiniz. Kaydet'e basınca CKEditor'a aktarılır.
+            </div>
+          </div>
         </div>
       </div>
 
@@ -68,8 +92,8 @@
           {{ form.show_in_menu.label }}
         </div>
         <div class="form-group" style="margin-top: 1rem;">
-          {{ form.menu_order.label }}
-          {{ form.menu_order(class="form-input", type="number", min=0) }}
+          {{ form.order_index.label }}
+          {{ form.order_index(class="form-input", type="number", min=0) }}
         </div>
       </div>
 
@@ -82,14 +106,16 @@
           </div>
         {% endif %}
         <div class="form-group">
-          {{ form.cover_image_file.label }}
-          {{ form.cover_image_file(class="form-input-file") }}
+          {{ form.cover_image.label }}
+          {{ form.cover_image(class="form-input-file") }}
           <div class="form-hint">JPG, PNG, WebP — Max 10MB</div>
         </div>
       </div>
 
       <div class="admin-card">
-        <button type="submit" class="btn btn-primary btn-block btn-lg">{% if page %}Güncelle{% else %}Oluştur{% endif %}</button>
+        <button type="submit" class="btn btn-primary btn-block btn-lg" id="submit-btn">
+          {% if page %}Güncelle{% else %}Oluştur{% endif %}
+        </button>
         {% if page %}
           <a href="{{ url_for('public.dynamic_page', slug=page.slug) }}" target="_blank" class="btn btn-outline btn-block" style="margin-top: 0.5rem;">Önizleme</a>
         {% endif %}
@@ -97,4 +123,54 @@
     </div>
   </div>
 </form>
+
+<script>
+var _htmlMode = false;
+
+function toggleEditorMode() {
+  var ckeditorWrapper = document.getElementById('ckeditor-wrapper');
+  var htmlWrapper = document.getElementById('html-source-wrapper');
+  var htmlEditor = document.getElementById('html-source-editor');
+  var toggleLabel = document.getElementById('toggle-label');
+  var toggleIcon = document.getElementById('toggle-icon');
+
+  _htmlMode = !_htmlMode;
+
+  if (_htmlMode) {
+    // CKEditor → HTML textarea
+    var ckInstance = CKEDITOR.instances['content'];
+    if (ckInstance) {
+      htmlEditor.value = ckInstance.getData();
+    }
+    ckeditorWrapper.style.display = 'none';
+    htmlWrapper.style.display = 'block';
+    toggleLabel.textContent = 'Görsel Editör';
+    toggleIcon.textContent = '✏️';
+    htmlEditor.focus();
+  } else {
+    // HTML textarea → CKEditor
+    var ckInstance = CKEDITOR.instances['content'];
+    if (ckInstance) {
+      ckInstance.setData(htmlEditor.value);
+    }
+    htmlWrapper.style.display = 'none';
+    ckeditorWrapper.style.display = 'block';
+    toggleLabel.textContent = 'HTML Kodu';
+    toggleIcon.innerHTML = '&lt;/&gt;';
+  }
+}
+
+// Form gönderilmeden önce HTML modundaysa CKEditor'a aktar
+document.getElementById('page-form').addEventListener('submit', function() {
+  if (_htmlMode) {
+    var htmlEditor = document.getElementById('html-source-editor');
+    var ckInstance = CKEDITOR.instances['content'];
+    if (ckInstance) {
+      ckInstance.setData(htmlEditor.value);
+      // CKEditor'ın içeriği hidden input'a yazması için kısa bekleme
+      ckInstance.updateElement();
+    }
+  }
+});
+</script>
 {% endblock %}

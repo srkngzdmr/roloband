@@ -1,3 +1,4 @@
+from __future__ import annotations
 """Flask uzantıları (extensions) — circular import'ları önler."""
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate

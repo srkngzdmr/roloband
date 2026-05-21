@@ -1,3 +1,5 @@
+from __future__ import annotations
+from typing import Optional
 """Yükleme yardımcıları (görsel/video/pdf)."""
 import os
 import uuid
@@ -18,7 +20,7 @@ def allowed_video(filename: str) -> bool:
     return _ext(filename) in current_app.config["ALLOWED_VIDEO_EXTENSIONS"]
 
 
-def save_upload(file_storage, subfolder: str = "images") -> str | None:
+def save_upload(file_storage, subfolder: str = "images") -> Optional[str]:
     """Yüklenen dosyayı kaydeder, web yolu (örn. /static/uploads/images/xxx.jpg) döner."""
     if not file_storage or not file_storage.filename:
         return None
@@ -39,7 +41,7 @@ def save_upload(file_storage, subfolder: str = "images") -> str | None:
     return f"/static/uploads/{subfolder}/{unique}"
 
 
-def delete_upload(web_path: str | None) -> None:
+def delete_upload(web_path: Optional[str]) -> None:
     """Web yoluyla verilen dosyayı diskten siler (best-effort)."""
     if not web_path:
         return

@@ -1,34 +1,66 @@
 {% extends "public/base.html" %}
-{% block title %}{{ product.code }} {{ product.name }} | {{ site_name }}{% endblock %}
-{% block description %}{{ product.short_description }}{% endblock %}
+{% block title %}{{ product.code }} {{ tdb(product.name) }} | {{ site_name }}<section style="background:#050d1f; padding: 3rem 0 5rem;">
+  <div class="container">
+    <div class="cta-banner" data-reveal>
+      <div>
+        <h2>{{ t('cta_title') }}</h2>
+        <p>{{ t('cta_desc') }}</p>
+      </div>
+      <div class="actions">
+        <a href="{{ url_for('public.contact') }}?subject={{ product.code }}" class="btn btn-primary">{{ t('btn_get_quote_product') }}</a>
+        <a href="{{ url_for('public.products_index') }}" class="btn btn-outline-light">{{ t('cta_catalog') }}</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block description %}{{ tdb(product.short_description) }}<section style="background:#050d1f; padding: 3rem 0 5rem;">
+  <div class="container">
+    <div class="cta-banner" data-reveal>
+      <div>
+        <h2>{{ t('cta_title') }}</h2>
+        <p>{{ t('cta_desc') }}</p>
+      </div>
+      <div class="actions">
+        <a href="{{ url_for('public.contact') }}?subject={{ product.code }}" class="btn btn-primary">{{ t('btn_get_quote_product') }}</a>
+        <a href="{{ url_for('public.products_index') }}" class="btn btn-outline-light">{{ t('cta_catalog') }}</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% set prod_description = product.description_en if current_lang == 'en' and product.description_en else product.description %}
+{% set prod_usage      = product.usage_areas_en  if current_lang == 'en' and product.usage_areas_en  else product.usage_areas %}
 
 {% block content %}
-<header class="page-header">
+<header class="page-header"{% if product.cover_image %} style="--header-bg:url('{{ product.cover_image }}')"{% endif %}>
   <div class="container">
     <div class="breadcrumb">
-      <a href="/">Anasayfa</a> /
-      <a href="{{ url_for('public.products_index') }}">Ürünler</a> /
-      <a href="{{ url_for('public.category_detail', slug=product.category.slug) }}">{{ product.category.name }}</a> /
+      <a href="/">{{ t('breadcrumb_home') }}</a> /
+      <a href="{{ url_for('public.products_index') }}">{{ t('breadcrumb_products') }}</a> /
+      <a href="{{ url_for('public.category_detail', slug=product.category.slug) }}">{{ tdb(product.category.name) }}</a> /
       {{ product.code }}
     </div>
-    {% if product.code %}<div style="color:rgba(255,255,255,.7);font-weight:600;letter-spacing:.05em;text-transform:uppercase;font-size:.85rem;">{{ product.code }}</div>{% endif %}
-    <h1>{{ product.name }}</h1>
-    {% if product.short_description %}<p>{{ product.short_description }}</p>{% endif %}
+    {% if product.code %}<div style="color:rgba(255,255,255,.6);font-weight:600;letter-spacing:.05em;text-transform:uppercase;font-size:.85rem;">{{ product.code }}</div>{% endif %}
+    <h1>{{ tdb(product.name) }}</h1>
+    {% if product.short_description %}<p>{{ tdb(product.short_description) }}</p>{% endif %}
   </div>
 </header>
 
-<section>
+<section class="product-detail-section" style="padding: 4rem 0;">
   <div class="container">
-    <div class="product-detail-grid">
-      <div class="product-detail-media">
+    <div class="product-detail-grid" data-reveal>
+
+      <div class="product-detail-media product-detail-media-dark">
         {% if product.cover_image %}
-          <img src="{{ product.cover_image }}" alt="{{ product.name }}">
+          <img src="{{ product.cover_image }}" alt="{{ tdb(product.name) }}">
         {% else %}
           <div style="text-align:center;padding:3rem;">
-            <div style="font-family:var(--rb-font-display);font-size:3rem;font-weight:700;color:var(--rb-primary-dark);opacity:.5;">
+            <div style="font-family:var(--rb-font-display);font-size:3rem;font-weight:700;color:#7dd3fc;opacity:.5;">
               ROLO BAND
             </div>
-            <div style="font-family:var(--rb-font-display);font-size:1.5rem;color:var(--rb-text-2);margin-top:.5rem;">
+            <div style="font-family:var(--rb-font-display);font-size:1.5rem;color:#7dd3fc;opacity:.4;margin-top:.5rem;">
               {{ product.code }}
             </div>
           </div>
@@ -36,68 +68,82 @@
       </div>
 
       <div>
-        {% if product.description %}
-          <h3 style="margin-top:0;">Ürün Tanımı</h3>
-          <div style="color:var(--rb-text-2);">{{ product.description | safe }}</div>
+        {% if prod_description %}
+          <h3 style="margin-top:0;">{{ t('product_description') }}</h3>
+          <div class="product-detail-desc">{{ prod_description | safe }}</div>
         {% endif %}
 
-        <h3 style="margin-top:2rem;">Teknik Özellikler</h3>
-        <table class="tech-table">
-          {% if product.pitch_mm %}<tr><th>Hatve</th><td>{{ product.pitch_mm }} mm</td></tr>{% endif %}
-          {% if product.thickness_mm %}<tr><th>Kalınlık</th><td>{{ product.thickness_mm }} mm</td></tr>{% endif %}
-          {% if product.pin_diameter_mm %}<tr><th>Pim Çapı</th><td>Ø {{ product.pin_diameter_mm }} mm (Kendinden Kilitli)</td></tr>{% endif %}
-          {% if product.open_area_pct is not none %}<tr><th>Açıklık Oranı</th><td>%{{ product.open_area_pct|int }}</td></tr>{% endif %}
-          {% if product.surface_type %}<tr><th>Yüzey Tipi</th><td>{{ product.surface_type }}</td></tr>{% endif %}
-          {% if product.materials %}<tr><th>Malzemeler</th><td>{{ product.materials }}</td></tr>{% endif %}
+        <h3 style="margin-top:2rem;">{{ t('product_specs_title') }}</h3>
+        <table class="tech-table tech-table-dark">
+          {% if product.pitch_mm %}<tr><th>{{ t('spec_pitch') }}</th><td>{{ product.pitch_mm }} mm</td></tr>{% endif %}
+          {% if product.thickness_mm %}<tr><th>{{ t('spec_thickness') }}</th><td>{{ product.thickness_mm }} mm</td></tr>{% endif %}
+          {% if product.pin_diameter_mm %}<tr><th>{{ t('spec_pin') }}</th><td>Ø {{ product.pin_diameter_mm }} mm ({{ t('spec_pin_suffix') }})</td></tr>{% endif %}
+          {% if product.open_area_pct is not none %}<tr><th>{{ t('spec_open_area') }}</th><td>%{{ product.open_area_pct|int }}</td></tr>{% endif %}
+          {% if product.surface_type %}<tr><th>{{ t('spec_surface') }}</th><td>{{ tdb(product.surface_type) }}</td></tr>{% endif %}
+          {% if product.materials %}<tr><th>{{ t('spec_materials') }}</th><td>{{ product.materials }}</td></tr>{% endif %}
           {% if product.temp_min is not none and product.temp_max is not none %}
-            <tr><th>Sıcaklık Dayanımı</th><td>{{ product.temp_min }}°C ile +{{ product.temp_max }}°C</td></tr>
+            <tr><th>{{ t('spec_temp') }}</th><td>{{ product.temp_min }}°C — +{{ product.temp_max }}°C</td></tr>
           {% endif %}
-          {% if product.certifications %}<tr><th>Sertifikalar</th><td>{{ product.certifications }}</td></tr>{% endif %}
+          {% if product.certifications %}<tr><th>{{ t('spec_certs') }}</th><td>{{ product.certifications }}</td></tr>{% endif %}
         </table>
 
         <div style="display:flex;gap:.75rem;flex-wrap:wrap;margin-top:2rem;">
-          <a href="{{ url_for('public.contact') }}?subject=Ürün+Bilgisi:+{{ product.code }}" class="btn btn-primary-solid">
-            Bu Ürün İçin Teklif Al
+          <a href="{{ url_for('public.contact') }}?subject={{ t('btn_get_quote_product') }}:+{{ product.code }}" class="btn btn-primary-solid">
+            {{ t('btn_get_quote_product') }}
           </a>
           {% if product.datasheet_pdf %}
-            <a href="{{ product.datasheet_pdf }}" target="_blank" class="btn btn-outline">
-              Teknik Föy (PDF)
+            <a href="{{ product.datasheet_pdf }}" target="_blank" class="btn btn-outline-light">
+              {{ t('btn_datasheet') }}
             </a>
           {% endif %}
         </div>
       </div>
     </div>
 
-    {% if product.usage_areas %}
-      <div style="margin-top:4rem;">
-        <h2 style="margin-bottom:1.5rem;">Kullanım Alanları</h2>
-        <div style="color:var(--rb-text-2);max-width:800px;">{{ product.usage_areas | safe }}</div>
+    {% if prod_usage %}
+      <div class="usage-area-dark" style="margin-top:4rem;" data-reveal>
+        <h2 style="margin-bottom:1.5rem;">{{ t('product_usage_title') }}</h2>
+        <div style="max-width:800px;">{{ prod_usage | safe }}</div>
       </div>
     {% endif %}
 
     {% if related %}
-      <div style="margin-top:5rem;">
-        <h2 style="margin-bottom:2rem;">Benzer Ürünler</h2>
-        <div class="product-grid">
+      <div class="related-dark" style="margin-top:5rem;" data-reveal>
+        <h2 style="margin-bottom:2rem;">{{ t('related_products_title') }}</h2>
+        <div class="product-grid" data-stagger>
           {% for r in related %}
-            <a href="{{ url_for('public.product_detail', slug=r.slug) }}" class="product-card">
+            <a href="{{ url_for('public.product_detail', slug=r.slug) }}" class="product-card product-card-dark">
               <div class="image">
                 {% if r.cover_image %}
-                  <img src="{{ r.cover_image }}" alt="{{ r.name }}" loading="lazy">
+                  <img src="{{ r.cover_image }}" alt="{{ tdb(r.name) }}" loading="lazy">
                 {% else %}
                   <div class="placeholder">{{ r.code }}</div>
                 {% endif %}
               </div>
               <div class="body">
                 {% if r.code %}<div class="code">{{ r.code }}</div>{% endif %}
-                <h3>{{ r.name }}</h3>
-                <p class="desc">{{ r.short_description }}</p>
+                <h3>{{ tdb(r.name) }}</h3>
+                <p class="desc">{{ tdb(r.short_description) }}</p>
               </div>
             </a>
           {% endfor %}
         </div>
       </div>
     {% endif %}
+  </div>
+</section>
+<section style="background:#050d1f; padding: 3rem 0 5rem;">
+  <div class="container">
+    <div class="cta-banner" data-reveal>
+      <div>
+        <h2>{{ t('cta_title') }}</h2>
+        <p>{{ t('cta_desc') }}</p>
+      </div>
+      <div class="actions">
+        <a href="{{ url_for('public.contact') }}?subject={{ product.code }}" class="btn btn-primary">{{ t('btn_get_quote_product') }}</a>
+        <a href="{{ url_for('public.products_index') }}" class="btn btn-outline-light">{{ t('cta_catalog') }}</a>
+      </div>
+    </div>
   </div>
 </section>
 {% endblock %}

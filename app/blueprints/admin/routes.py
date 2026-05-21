@@ -1,3 +1,4 @@
+from __future__ import annotations
 """Admin panel route'ları."""
 from datetime import datetime
 from functools import wraps
@@ -516,3 +517,19 @@ def ckeditor_upload():
         "fileName": f.filename,
         "url": web_path,
     })
+
+
+# ---------------------------------------------------------------------------
+# Eray Agent — Nginx auth_request dogrulama endpoint'i
+# ---------------------------------------------------------------------------
+@admin_bp.route("/verify-auth")
+def verify_auth():
+    if current_user.is_authenticated and current_user.role == "admin":
+        return "", 200
+    return "", 401
+
+@admin_bp.route("/agent/")
+@admin_bp.route("/agent/<path:subpath>")
+@admin_required
+def agent_page(subpath=""):
+    return render_template("admin/agent.html")

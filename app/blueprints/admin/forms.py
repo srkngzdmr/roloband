@@ -1,3 +1,4 @@
+from __future__ import annotations
 """Admin panel form'ları."""
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed

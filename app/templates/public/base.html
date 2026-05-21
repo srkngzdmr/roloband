@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="{{ current_lang }}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block title %}{{ site_name }} | Modüler Konveyör Bantları{% endblock %}</title>
+  <title>{% block title %}{{ site_name }} | {{ t('site_tagline') }}{% endblock %}</title>
 
-  <meta name="description" content="{% block description %}ROLOBAND — İzmir Menderes merkezli, FDA ve EU onaylı modüler konveyör bant üreticisi. Gıda işleme makine imalatçıları için profesyonel B2B çözümler.{% endblock %}">
+  <meta name="description" content="{% block description %}{{ t('meta_description') }}{% endblock %}">
   <meta name="keywords" content="modüler bant, konveyör bant, modular belt, gıda konveyörü, ROLOBAND, FDA onaylı bant, EU 10/2011">
   <meta name="robots" content="index, follow">
 
@@ -14,16 +14,644 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="{{ request.url }}">
 
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230ea5e9'/><text x='50' y='65' font-size='50' text-anchor='middle' fill='white' font-family='Arial' font-weight='bold'>R</text></svg>">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231d4ed8'/><text x='50' y='65' font-size='50' text-anchor='middle' fill='white' font-family='Arial' font-weight='bold'>R</text></svg>">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') + '?v=12' }}">
   {% block head %}{% endblock %}
+
+  <style>
+  /* ============================================================
+     INTRO / SPLASH SCREEN — VIDEO BACKGROUND
+     ============================================================ */
+  #rb-intro {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 99999;
+    background: #060e1f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  #rb-intro-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    animation: videoFadeIn 1.8s ease 0.3s forwards;
+  }
+
+  @keyframes videoFadeIn {
+    to { opacity: 1; }
+  }
+
+  #rb-intro-overlay {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 40%, rgba(10,22,80,.55) 0%, rgba(6,14,31,.82) 70%),
+      linear-gradient(to bottom, rgba(6,14,31,.4) 0%, rgba(6,14,31,.75) 100%);
+    z-index: 1;
+  }
+
+  #rb-intro-grid {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background-image:
+      linear-gradient(rgba(29,78,216,.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(29,78,216,.06) 1px, transparent 1px);
+    background-size: 60px 60px;
+    animation: gridMove 10s linear infinite;
+  }
+
+  @keyframes gridMove {
+    0%   { background-position: 0 0; }
+    100% { background-position: 0 60px; }
+  }
+
+  .intro-content {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    padding: 0 2rem;
+    gap: 0;
+  }
+
+  .intro-glow {
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(29,78,216,.5) 0%, rgba(29,78,216,.15) 40%, transparent 70%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -52%);
+    z-index: 9;
+    animation: glowPulse 3s ease-in-out infinite;
+  }
+
+  @keyframes glowPulse {
+    0%, 100% { opacity: .7; transform: translate(-50%, -52%) scale(1); }
+    50%       { opacity: 1;  transform: translate(-50%, -52%) scale(1.12); }
+  }
+
+  .intro-logo {
+    width: min(380px, 72vw);
+    height: auto;
+    opacity: 0;
+    transform: scale(.75) translateY(20px);
+    animation: logoIn 1.2s cubic-bezier(.16,1,.3,1) .5s forwards;
+    filter: drop-shadow(0 0 50px rgba(59,130,246,.8)) drop-shadow(0 4px 24px rgba(0,0,0,.6));
+    position: relative;
+    z-index: 10;
+  }
+
+  @keyframes logoIn {
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  .intro-line {
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #3b82f6, #60a5fa, #3b82f6, transparent);
+    margin: 1.8rem auto 0;
+    animation: lineExpand 1s cubic-bezier(.4,0,.2,1) 1.5s forwards;
+    position: relative;
+    z-index: 10;
+  }
+
+  @keyframes lineExpand {
+    to { width: min(360px, 70vw); }
+  }
+
+  .intro-tagline {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(.9rem, 2.2vw, 1.25rem);
+    font-weight: 600;
+    color: rgba(255,255,255,.92);
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    margin-top: 1.5rem;
+    opacity: 0;
+    transform: translateY(18px);
+    animation: fadeUp .9s ease 1.9s forwards;
+    position: relative;
+    z-index: 10;
+  }
+
+  .intro-meta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.4rem;
+    margin-top: 1.1rem;
+    opacity: 0;
+    animation: fadeUp .8s ease 2.5s forwards;
+    position: relative;
+    z-index: 10;
+  }
+
+  .intro-meta-item {
+    display: flex;
+    align-items: center;
+    gap: .45rem;
+    font-size: .76rem;
+    font-weight: 600;
+    color: rgba(255,255,255,.5);
+    letter-spacing: .1em;
+    text-transform: uppercase;
+  }
+
+  .intro-meta-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #3b82f6;
+    box-shadow: 0 0 8px #3b82f6;
+    flex-shrink: 0;
+  }
+
+  .intro-sep { color: rgba(255,255,255,.2); font-size: .9rem; }
+
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .intro-progress-wrap {
+    position: absolute;
+    bottom: 2.5rem;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    width: min(320px, 70vw);
+    z-index: 10;
+    opacity: 0;
+    animation: fadeUp .6s ease 3.1s forwards;
+  }
+
+  .intro-progress-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: .6rem;
+    font-size: .7rem;
+    color: rgba(255,255,255,.3);
+    letter-spacing: .1em;
+    text-transform: uppercase;
+  }
+
+  .intro-progress-bar {
+    width: 100%;
+    height: 2px;
+    background: rgba(255,255,255,.1);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .intro-progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #1d4ed8, #3b82f6, #60a5fa);
+    border-radius: 999px;
+    animation: progressFill 6.5s linear 2.9s forwards;
+    box-shadow: 0 0 8px rgba(59,130,246,.6);
+  }
+
+  @keyframes progressFill {
+    to { width: 100%; }
+  }
+
+  .intro-skip {
+    position: absolute;
+    top: 1.5rem;
+    right: 2rem;
+    font-size: .72rem;
+    color: rgba(255,255,255,.28);
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    z-index: 20;
+    cursor: pointer;
+    transition: color .3s;
+    opacity: 0;
+    animation: fadeUp .5s ease 3.5s forwards;
+    user-select: none;
+  }
+
+  .intro-skip:hover { color: rgba(255,255,255,.65); }
+
+  #rb-intro.outro {
+    animation: introOut .9s cubic-bezier(.4,0,1,1) forwards;
+  }
+
+  @keyframes introOut {
+    0%   { opacity: 1; transform: scale(1); }
+    100% { opacity: 0; transform: scale(1.04); pointer-events: none; }
+  }
+
+  body.intro-active { overflow: hidden; }
+
+  .intro-fallback-bg {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #060e1f 0%, #0d1f5c 40%, #1d4ed8 65%, #0a1628 100%);
+    z-index: 0;
+    animation: gradShift 8s ease-in-out infinite;
+  }
+
+  @keyframes gradShift {
+    0%, 100% { filter: brightness(1); }
+    50%       { filter: brightness(1.15); }
+  }
+
+  /* ── Dil değiştirici ── */
+  .lang-switcher {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: .75rem;
+    flex-shrink: 0;
+  }
+  .lang-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 8px;
+    font-size: .68rem;
+    font-weight: 700;
+    letter-spacing: .06em;
+    color: rgba(30,41,59,.55);
+    border-radius: 5px;
+    text-decoration: none;
+    transition: all .2s;
+    border: 1px solid rgba(30,41,59,.15);
+    white-space: nowrap;
+    background: rgba(30,41,59,.04);
+  }
+  .lang-btn img {
+    width: 18px;
+    height: auto;
+    border-radius: 2px;
+    opacity: .75;
+    transition: opacity .2s;
+    flex-shrink: 0;
+    display: block;
+  }
+  .lang-btn:hover { color: #1d4ed8; background: rgba(29,78,216,.08); border-color: rgba(29,78,216,.3); }
+  .lang-btn:hover img { opacity: 1; }
+  .lang-btn.active { color: #1d4ed8; background: rgba(29,78,216,.1); border-color: rgba(29,78,216,.35); }
+  .lang-btn.active img { opacity: 1; }
+  @media (max-width: 768px) {
+    .lang-switcher { margin-left: .4rem; }
+    .lang-btn { padding: 3px 6px; gap: 4px; }
+    .lang-btn img { width: 15px; }
+    .lang-btn span { font-size: .62rem; }
+  }
+
+  /* ── Blurred arka plan: page-header & footer ── */
+  .page-header::before,
+  .site-footer::before {
+    content: '';
+    position: absolute;
+    inset: -12px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: blur(8px);
+    z-index: 0;
+    pointer-events: none;
+    opacity: 1;
+  }
+  .page-header::before {
+    background-image: var(--header-bg, url('/static/uploads/products/header-bg.jpg'));
+  }
+  .site-footer::before {
+    background-image: url('/static/uploads/products/footer-bg.jpg');
+  }
+  .page-header .container,
+  .page-header nav,
+  .site-footer .container { position: relative; z-index: 2; }
+
+  /* ── KVKK sayfası stilleri ── */
+  .kvkk-header { background: linear-gradient(135deg,var(--rb-primary-dark) 0%,var(--rb-primary-darker) 100%); color:#fff; border-radius:12px; padding:2.5rem 2rem; margin-bottom:2.5rem; }
+  .kvkk-header h2 { color:#fff; margin:0 0 .75rem; font-size:1.5rem; }
+  .kvkk-lead { color:rgba(255,255,255,.85); margin:0; font-size:1.05rem; line-height:1.6; }
+  .kvkk-section { margin-bottom:2.25rem; padding-bottom:2.25rem; border-bottom:1px solid var(--rb-border); }
+  .kvkk-section:last-child { border-bottom:none; }
+  .kvkk-section h3 { color:var(--rb-primary-dark); font-size:1.1rem; font-weight:700; margin:0 0 1rem; }
+  .kvkk-section ul { padding-left:1.4rem; color:var(--rb-text-2); line-height:1.8; }
+  .kvkk-section li { margin-bottom:.3rem; }
+  .kvkk-table-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; border-radius:8px; border:1px solid var(--rb-border); }
+  .kvkk-table { width:100%; border-collapse:collapse; font-size:.875rem; }
+  .kvkk-table th { background:var(--rb-primary-light); color:var(--rb-primary-dark); font-weight:700; padding:.65rem 1rem; text-align:left; white-space:nowrap; }
+  .kvkk-table td { padding:.6rem 1rem; border-top:1px solid var(--rb-border); color:var(--rb-text-2); vertical-align:top; }
+  .kvkk-table tr:hover td { background:rgba(29,78,216,.03); }
+  .kvkk-rights-note { background:var(--rb-primary-light); border-left:3px solid var(--rb-primary); padding:1rem 1.25rem; border-radius:0 8px 8px 0; margin-top:1.25rem; color:var(--rb-text-2); font-size:.9rem; }
+  .kvkk-rights-note a { color:var(--rb-primary); font-weight:600; }
+  .kvkk-update { background:var(--rb-bg-2,#f8fafc); border-radius:8px; padding:1.25rem 1.5rem; border-bottom:none !important; }
+
+  /* ── Çerez bildirimi ── */
+  #rb-cookie-banner {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 9500;
+    background: #0f172a;
+    color: #e2e8f0;
+    padding: 0;
+    box-shadow: 0 -4px 24px rgba(0,0,0,.35);
+    transform: translateY(100%);
+    transition: transform .4s cubic-bezier(.4,0,.2,1);
+  }
+  #rb-cookie-banner.visible { transform: translateY(0); }
+  .rb-cb-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+  }
+  .rb-cb-logo-wrap {
+    flex-shrink: 0;
+    background: rgba(255,255,255,.95);
+    border-radius: 7px;
+    padding: 5px 10px;
+    display: flex;
+    align-items: center;
+  }
+  .rb-cb-logo {
+    height: 22px;
+    width: auto;
+    display: block;
+  }
+  .rb-cb-text {
+    flex: 1;
+    min-width: 200px;
+    font-size: .82rem;
+    line-height: 1.55;
+    color: rgba(226,232,240,.8);
+  }
+  .rb-cb-text a { color: #93c5fd; text-decoration: underline; }
+  .rb-cb-actions {
+    display: flex;
+    gap: .6rem;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+  }
+  .rb-cb-btn {
+    padding: .5rem 1.2rem;
+    border-radius: 6px;
+    font-size: .8rem;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    transition: opacity .15s, transform .1s;
+    white-space: nowrap;
+  }
+  .rb-cb-btn:active { transform: scale(.97); }
+  .rb-cb-accept { background: #2563eb; color: #fff; }
+  .rb-cb-accept:hover { background: #1d4ed8; }
+  .rb-cb-manage { background: transparent; color: #93c5fd; border: 1px solid rgba(147,197,253,.35) !important; }
+  .rb-cb-manage:hover { background: rgba(147,197,253,.08); }
+
+  /* Yönet modal */
+  #rb-cookie-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9600;
+    background: rgba(0,0,0,.6);
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 0;
+  }
+  #rb-cookie-modal.open { display: flex; }
+  .rb-cm-box {
+    background: #1e293b;
+    color: #e2e8f0;
+    width: 100%;
+    max-width: 520px;
+    border-radius: 16px 16px 0 0;
+    padding: 1.75rem 1.5rem 2rem;
+    box-shadow: 0 -8px 40px rgba(0,0,0,.5);
+  }
+  .rb-cm-box h4 { color:#fff; font-size:1.05rem; margin:0 0 .5rem; }
+  .rb-cm-box p  { font-size:.82rem; color:rgba(226,232,240,.7); margin:0 0 1.25rem; }
+  .rb-cm-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(255,255,255,.05);
+    border-radius: 8px;
+    padding: .75rem 1rem;
+    margin-bottom: .6rem;
+  }
+  .rb-cm-item-text strong { display:block; font-size:.85rem; color:#e2e8f0; }
+  .rb-cm-item-text span  { font-size:.75rem; color:rgba(226,232,240,.55); }
+  .rb-cm-toggle {
+    position: relative;
+    width: 40px; height: 22px;
+    flex-shrink: 0;
+    margin-left: 1rem;
+  }
+  .rb-cm-toggle input { opacity:0; width:0; height:0; }
+  .rb-cm-track {
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,.15);
+    border-radius: 22px;
+    transition: background .2s;
+    cursor: pointer;
+  }
+  .rb-cm-track::after {
+    content:'';
+    position:absolute;
+    top:3px; left:3px;
+    width:16px; height:16px;
+    background:#fff;
+    border-radius:50%;
+    transition: transform .2s;
+  }
+  .rb-cm-toggle input:checked + .rb-cm-track { background:#2563eb; }
+  .rb-cm-toggle input:checked + .rb-cm-track::after { transform:translateX(18px); }
+  .rb-cm-toggle input:disabled + .rb-cm-track { opacity:.5; cursor:not-allowed; }
+  .rb-cm-actions { display:flex; gap:.6rem; margin-top:1.25rem; }
+  .rb-cm-save { flex:1; padding:.65rem; background:#2563eb; color:#fff; border:none; border-radius:8px; font-size:.85rem; font-weight:700; cursor:pointer; }
+  .rb-cm-save:hover { background:#1d4ed8; }
+  @media (max-width:640px) {
+    .rb-cb-inner { padding:.85rem 1rem; gap:.75rem; }
+    .rb-cb-logo  { height:22px; }
+    .rb-cb-text  { font-size:.78rem; }
+  }
+
+  /* ── Floating sosyal bar ── */
+  .rb-social-float {
+    position: fixed;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 8000;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    pointer-events: auto;
+  }
+  .rb-social-float a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    color: #fff;
+    text-decoration: none;
+    transition: width .2s ease, border-radius .2s ease, box-shadow .2s;
+    position: relative;
+    overflow: visible;
+  }
+  .rb-social-float a:first-child { border-radius: 8px 0 0 0; }
+  .rb-social-float a:last-child  { border-radius: 0 0 0 8px; }
+  .rb-social-float a:first-child:last-child { border-radius: 8px 0 0 8px; }
+  .rb-social-float a.rb-wa    { background: #25d366; }
+  .rb-social-float a.rb-phone { background: #1d4ed8; }
+  .rb-social-float a.rb-ig    { background: linear-gradient(160deg,#f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); }
+  .rb-social-float a.rb-li    { background: #0a66c2; }
+  .rb-social-float a:hover {
+    width: 56px;
+    border-radius: 8px 0 0 8px !important;
+    box-shadow: -3px 0 12px rgba(0,0,0,.25);
+  }
+  .rb-social-float a svg { width: 22px; height: 22px; flex-shrink: 0; }
+  .rb-social-float .rb-tip {
+    position: absolute;
+    right: 52px;
+    background: rgba(15,23,42,.88);
+    color: #fff;
+    font-size: .7rem;
+    font-weight: 600;
+    letter-spacing: .03em;
+    padding: 4px 9px;
+    border-radius: 5px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateX(4px);
+    transition: opacity .15s, transform .15s;
+  }
+  .rb-social-float a:hover .rb-tip {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  @media (max-width: 640px) {
+    .rb-social-float {
+      top: 50%;
+      transform: translateY(-50%);
+      right: 0;
+      left: auto;
+      bottom: auto;
+      flex-direction: column;
+    }
+    .rb-social-float a {
+      width: 38px !important;
+      height: 38px !important;
+    }
+    .rb-social-float a svg { width: 18px; height: 18px; }
+    .rb-social-float a:hover { width: 38px !important; border-radius: inherit !important; box-shadow: none !important; }
+    .rb-social-float .rb-tip { display: none; }
+  }
+  /* ── MOBİL HERO FIX: header altında direk video ── */
+  @media (max-width: 768px) {
+    main { padding-top: 76px !important; }
+    .hero { display:flex !important; flex-direction:column !important; align-items:stretch !important;
+            min-height:unset !important; height:auto !important;
+            padding:0 !important; margin:0 !important; overflow:hidden !important; }
+    .hero-media { position:relative !important; width:100% !important; height:56.25vw !important;
+                  overflow:hidden !important; flex-shrink:0 !important;
+                  top:auto !important; right:auto !important; bottom:auto !important; left:auto !important;
+                  inset:auto !important; z-index:1 !important; margin:0 !important; }
+    .hero-media video, .hero-media img { position:absolute !important; inset:0 !important;
+                  width:100% !important; height:100% !important; max-width:none !important;
+                  max-height:none !important; object-fit:cover !important; display:block !important; }
+    .hero-overlay { display:none !important; }
+  }
+  </style>
 </head>
-<body>
+<body class="intro-active">
+
+  <!-- INTRO SPLASH -->
+  <div id="rb-intro" onclick="skipIntro()">
+
+    <div class="intro-fallback-bg"></div>
+
+    <video id="rb-intro-video"
+           autoplay muted loop playsinline
+           preload="auto"
+           {% if settings.hero_poster_image %}poster="{{ settings.hero_poster_image }}"{% endif %}>
+      {% if settings.hero_video_url %}
+        <source src="{{ settings.hero_video_url }}" type="video/mp4">
+      {% else %}
+        <source src="{{ url_for('static', filename='img/intro-bg.mp4') }}" type="video/mp4">
+      {% endif %}
+    </video>
+
+    <div id="rb-intro-overlay"></div>
+    <div id="rb-intro-grid"></div>
+    <div class="intro-glow"></div>
+
+    <div class="intro-content">
+      <img src="{{ url_for('static', filename='img/roloband-logo.png') }}"
+           alt="ROLOBAND"
+           class="intro-logo">
+      <div class="intro-line"></div>
+      <div class="intro-tagline">{{ t('splash_tagline') }}</div>
+      <div class="intro-meta">
+        <div class="intro-meta-item">
+          <div class="intro-meta-dot"></div>
+          {{ t('splash_fda') }}
+        </div>
+        <div class="intro-sep">·</div>
+        <div class="intro-meta-item">
+          <div class="intro-meta-dot"></div>
+          {{ t('splash_eu') }}
+        </div>
+        <div class="intro-sep">·</div>
+        <div class="intro-meta-item">
+          <div class="intro-meta-dot"></div>
+          {{ t('splash_location') }}
+        </div>
+      </div>
+    </div>
+
+    <div class="intro-progress-wrap">
+      <div class="intro-progress-label">
+        <span>{{ t('loading') }}</span>
+        <span>roloband.com</span>
+      </div>
+      <div class="intro-progress-bar">
+        <div class="intro-progress-fill"></div>
+      </div>
+    </div>
+
+    <div class="intro-skip">Atla ×</div>
+  </div>
+  <!-- /INTRO -->
+
   {% include 'public/_header.html' %}
 
   <main>
@@ -43,6 +671,185 @@
   {% include 'public/_footer.html' %}
 
   <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+    <script>
+  (function() {
+    var intro = document.getElementById('rb-intro');
+
+    function dismiss() {
+      if (!intro) return;
+      intro.classList.add('outro');
+      document.body.classList.remove('intro-active');
+      setTimeout(function() {
+        if (intro && intro.parentNode) intro.parentNode.removeChild(intro);
+      }, 900);
+    }
+
+    window.skipIntro = function() {
+      if (intro && !intro.classList.contains('outro')) dismiss();
+    };
+
+    var isMobile = window.innerWidth <= 900 || /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+    var path = window.location.pathname;
+    var isHome = (path === '/' || path === '');
+
+    // Mobil veya anasayfa degil: aninda goster
+    if (isMobile || !isHome) {
+      dismiss();
+      return;
+    }
+
+    var skipFlag = sessionStorage.getItem('rb_skip_intro') === '1';
+    sessionStorage.removeItem('rb_skip_intro');
+
+    var navEntry = (performance.getEntriesByType('navigation')[0] || {});
+    var isReload = navEntry.type === 'reload';
+    var isFirstVisit = !sessionStorage.getItem('rb_visited');
+    var shouldShow = !skipFlag && (isFirstVisit || isReload);
+
+    if (!shouldShow) {
+      dismiss();
+    } else {
+      sessionStorage.setItem('rb_visited', '1');
+      setTimeout(dismiss, 5500);
+    }
+  })();
+  </script>
+
   {% block scripts %}{% endblock %}
+
+  <!-- ── Çerez bildirimi ── -->
+  <div id="rb-cookie-banner" role="dialog" aria-live="polite" aria-label="{{ t('cookie_banner_label') if t('cookie_banner_label') != 'cookie_banner_label' else 'Çerez bildirimi' }}">
+    <div class="rb-cb-inner">
+      <div class="rb-cb-logo-wrap">
+        <img src="{{ url_for('static', filename='img/roloband-logo.png') }}" alt="ROLOBAND" class="rb-cb-logo">
+      </div>
+      <p class="rb-cb-text">
+        {% if current_lang == 'en' %}
+          We use essential cookies to provide language preferences and form security. No tracking or advertising cookies are used.
+          <a href="/kvkk">Privacy Policy</a>
+        {% else %}
+          Dil tercihi ve form güvenliği için zorunlu çerezler kullanıyoruz. İzleme veya reklam çerezi kullanılmamaktadır.
+          <a href="/kvkk">KVKK Aydınlatma Metni</a>
+        {% endif %}
+      </p>
+      <div class="rb-cb-actions">
+        <button class="rb-cb-btn rb-cb-manage" onclick="rbCookieManage()">
+          {{ 'Manage' if current_lang == 'en' else 'Yönet' }}
+        </button>
+        <button class="rb-cb-btn rb-cb-accept" onclick="rbCookieAccept()">
+          {{ 'Accept' if current_lang == 'en' else 'Kabul Et' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Çerez yönet modal -->
+  <div id="rb-cookie-modal" role="dialog" aria-modal="true">
+    <div class="rb-cm-box">
+      <h4>{{ 'Cookie Preferences' if current_lang == 'en' else 'Çerez Tercihleri' }}</h4>
+      <p>{{ 'Essential cookies cannot be disabled as they are required for the site to function.' if current_lang == 'en' else 'Zorunlu çerezler sitenin çalışması için gereklidir, devre dışı bırakılamaz.' }}</p>
+
+      <div class="rb-cm-item">
+        <div class="rb-cm-item-text">
+          <strong>{{ 'Essential Cookies' if current_lang == 'en' else 'Zorunlu Çerezler' }}</strong>
+          <span>{{ 'Language, session, consent preference' if current_lang == 'en' else 'Dil, oturum, onay tercihi' }}</span>
+        </div>
+        <label class="rb-cm-toggle">
+          <input type="checkbox" checked disabled>
+          <span class="rb-cm-track"></span>
+        </label>
+      </div>
+
+      <div class="rb-cm-item">
+        <div class="rb-cm-item-text">
+          <strong>{{ 'Analytics Cookies' if current_lang == 'en' else 'Analitik Çerezler' }}</strong>
+          <span>{{ 'Not currently used' if current_lang == 'en' else 'Şu an kullanılmıyor' }}</span>
+        </div>
+        <label class="rb-cm-toggle">
+          <input type="checkbox" id="rb-analytics-toggle" disabled>
+          <span class="rb-cm-track"></span>
+        </label>
+      </div>
+
+      <div class="rb-cm-actions">
+        <button class="rb-cm-save" onclick="rbCookieAccept()">
+          {{ 'Save & Accept' if current_lang == 'en' else 'Kaydet ve Kabul Et' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (function(){
+    var COOKIE_KEY = 'rb_cookie_consent';
+    function getCookie(n){return ('; '+document.cookie).split('; '+n+'=').pop().split(';').shift();}
+    function setCookie(n,v,days){var d=new Date();d.setTime(d.getTime()+days*864e5);document.cookie=n+'='+v+';expires='+d.toUTCString()+';path=/;SameSite=Lax';}
+
+    var banner = document.getElementById('rb-cookie-banner');
+    var modal  = document.getElementById('rb-cookie-modal');
+
+    if(!getCookie(COOKIE_KEY)){
+      setTimeout(function(){ banner.classList.add('visible'); }, 800);
+    }
+
+    window.rbCookieAccept = function(){
+      setCookie(COOKIE_KEY,'accepted',365);
+      banner.classList.remove('visible');
+      modal.classList.remove('open');
+    };
+
+    window.rbCookieManage = function(){
+      modal.classList.add('open');
+    };
+
+    modal.addEventListener('click', function(e){
+      if(e.target === modal) modal.classList.remove('open');
+    });
+  })();
+  </script>
+
+  <!-- Floating social bar -->
+  <div class="rb-social-float" role="complementary" aria-label="Social contacts">
+
+    <!-- WhatsApp -->
+    <a href="https://wa.me/905304434428" class="rb-wa" target="_blank" rel="noopener" aria-label="WhatsApp">
+      <span class="rb-tip">WhatsApp</span>
+      <svg viewBox="0 0 24 24" fill="currentColor">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+        <path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.554 4.121 1.528 5.859L.057 23.25a.75.75 0 00.927.928l5.487-1.473A11.942 11.942 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.75a9.705 9.705 0 01-4.95-1.355l-.355-.211-3.676.987.993-3.596-.232-.37A9.72 9.72 0 012.25 12C2.25 6.615 6.615 2.25 12 2.25S21.75 6.615 21.75 12 17.385 21.75 12 21.75z"/>
+      </svg>
+    </a>
+
+    <!-- Phone -->
+    <a href="tel:+905304434428" class="rb-phone" aria-label="Call us">
+      <span class="rb-tip">+90 530 443 44 28</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.37 1.9.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.33 1.85.57 2.81.7A2 2 0 0122 16.92z"/>
+      </svg>
+    </a>
+
+    <!-- Instagram -->
+    <a href="{{ settings.social_instagram or 'https://instagram.com/rolobandmoduler' }}" class="rb-ig" target="_blank" rel="noopener" aria-label="Instagram">
+      <span class="rb-tip">@rolobandmoduler</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+        <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/>
+        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+      </svg>
+    </a>
+
+    <!-- LinkedIn -->
+    {% if settings.social_linkedin %}
+    <a href="{{ settings.social_linkedin }}" class="rb-li" target="_blank" rel="noopener" aria-label="LinkedIn">
+      <span class="rb-tip">LinkedIn</span>
+      <svg viewBox="0 0 24 24" fill="currentColor">
+        <path d="M19 3a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14zm-9.5 15v-8H7v8h2.5zm-1.25-9.1a1.45 1.45 0 110-2.9 1.45 1.45 0 010 2.9zM18 18v-4.5c0-2.3-1.25-3.4-2.9-3.4-1.35 0-2 .74-2.35 1.28V10.5H10.2c.04.69 0 8 0 8H12.75v-4.5c0-.24.01-.48.08-.65.2-.5.65-1.01 1.4-1.01 1 0 1.4.75 1.4 1.85V18H18z"/>
+      </svg>
+    </a>
+    {% endif %}
+
+  </div>
+
 </body>
 </html>

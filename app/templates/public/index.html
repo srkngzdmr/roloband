@@ -1,12 +1,11 @@
 {% extends "public/base.html" %}
 
-{% block title %}{{ site_name }} | {{ settings.hero_title or 'Modüler Konveyör Sistemlerinde Çözüm Ortağınız' }}{% endblock %}
+{% block title %}{{ site_name }} | {{ t('site_tagline') }}{% endblock %}
 
+{% block head %}<style>html,body{background:#0a1440}</style>{% endblock %}
 {% block content %}
 
-{# ============================================================
-   HERO — TAM EKRAN VİDEO ARKAPLAN
-   ============================================================ #}
+{# ============================================================ HERO ============================================================ #}
 <section class="hero">
   <div class="hero-media">
     {% if settings.hero_video_url %}
@@ -17,36 +16,28 @@
     {% elif settings.hero_poster_image %}
       <img src="{{ settings.hero_poster_image }}" alt="ROLOBAND modüler bantlar">
     {% else %}
-      {# Video yoksa fallback: dinamik gradient + SVG pattern #}
-      <div style="width:100%;height:100%;background:
-        radial-gradient(circle at 20% 30%, #06b6d4 0%, transparent 50%),
-        radial-gradient(circle at 80% 70%, #0ea5e9 0%, transparent 50%),
-        linear-gradient(135deg, #0c4a6e, #082f49);"></div>
+      <div class="hero-fallback-bg"></div>
     {% endif %}
   </div>
-
   <div class="hero-overlay"></div>
 
   <div class="container hero-content">
     <span class="hero-eyebrow">
       <span class="dot"></span>
-      İzmir / Türkiye • Üretici Firma
+      {{ t('hero_eyebrow') | safe }}
     </span>
     <h1>
-      {{ settings.hero_title or 'Modüler Konveyör Sistemlerinde' }}
-      <br>
-      <span class="accent">Çözüm Ortağınız</span>
+      {{ t('hero_h1_line1') }}<br>
+      <span class="accent">{{ t('hero_h1_accent') }}</span>
     </h1>
-    <p class="lead">
-      {{ settings.hero_subtitle or "İzmir Menderes'ten dünyaya. Gıda işleme makineleri için FDA ve EU onaylı, uzun ömürlü modüler bant çözümleri." }}
-    </p>
+    <p class="lead">{{ t('hero_subtitle') }}</p>
     <div class="hero-actions">
       <a href="{{ settings.hero_cta_url or url_for('public.products_index') }}" class="btn btn-primary">
-        {{ settings.hero_cta_text or 'Ürünlerimizi İnceleyin' }}
+        {{ t('hero_cta_catalog') }}
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       </a>
       <a href="{{ url_for('public.contact') }}" class="btn btn-outline-light">
-        Bize Ulaşın
+        {{ t('hero_cta_quote') }}
       </a>
     </div>
   </div>
@@ -55,74 +46,141 @@
     <div class="container">
       <div class="hero-stat">
         <div class="num"><span data-count="15" data-suffix="+">0</span></div>
-        <div class="label">Yıllık Tecrübe</div>
+        <div class="label">{{ t('stat_experience') }}</div>
       </div>
       <div class="hero-stat">
         <div class="num"><span data-count="50" data-suffix="+">0</span></div>
-        <div class="label">Ürün Modeli</div>
+        <div class="label">{{ t('stat_models') }}</div>
       </div>
       <div class="hero-stat">
         <div class="num"><span data-count="200" data-suffix="+">0</span></div>
-        <div class="label">B2B Müşteri</div>
+        <div class="label">{{ t('stat_clients') }}</div>
       </div>
       <div class="hero-stat">
         <div class="num">FDA</div>
-        <div class="label">EU Onaylı</div>
+        <div class="label">{{ t('stat_certified') }}</div>
       </div>
     </div>
   </div>
 </section>
 
-{# ============================================================
-   GÜVEN ŞERİDİ
-   ============================================================ #}
-<section class="trust-strip" style="padding: 2rem 0;">
+{# ============================================================ SERTIFIKA SERIDI ============================================================ #}
+<section class="cert-strip">
   <div class="container">
-    <h4>Güvenilir Mühendislik • Sertifikalı Üretim</h4>
-    <div class="badges">
-      <div class="trust-badge">
-        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
-        FDA Onaylı
+    <div class="cert-items">
+      <div class="cert-item">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+        {{ t('cert_fda') }}
       </div>
-      <div class="trust-badge">
-        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
-        EU 10/2011
+      <div class="cert-sep">•</div>
+      <div class="cert-item">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+        {{ t('cert_eu') }}
       </div>
-      <div class="trust-badge">
-        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22,4 12,14.01 9,11.01"/></svg>
-        Gıdaya Uygun POM/PP/PE
+      <div class="cert-sep">•</div>
+      <div class="cert-item">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        {{ t('cert_stock') }}
       </div>
-      <div class="trust-badge">
-        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2L3 7l9 5 9-5-9-5zM3 17l9 5 9-5M3 12l9 5 9-5"/></svg>
-        Modüler Yapı
+      <div class="cert-sep">•</div>
+      <div class="cert-item">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2L3 7l9 5 9-5-9-5zM3 17l9 5 9-5M3 12l9 5 9-5"/></svg>
+        {{ t('cert_materials') }}
+      </div>
+      <div class="cert-sep">•</div>
+      <div class="cert-item">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+        {{ t('cert_engineering') }}
       </div>
     </div>
   </div>
 </section>
 
-{# ============================================================
-   KATEGORİLER (HATVE BAZLI)
-   ============================================================ #}
-<section>
+{# ============================================================ NEDEN MAKİNE ÜRETİCİLERİ ============================================================ #}
+<section class="b2b-value">
   <div class="container">
-    <div class="section-heading">
-      <span class="eyebrow">Ürün Yelpazemiz</span>
-      <h2>Hatve Ölçüsüne Göre Modüler Bantlar</h2>
-      <p>Her uygulama için doğru hatve — 12.7 mm dar dönüşten 50.8 mm ağır yüke kadar geniş ürün ailesi.</p>
+    <div class="b2b-value-inner">
+      <div class="b2b-value-text" data-reveal>
+        <span class="eyebrow">{{ t('b2b_eyebrow') }}</span>
+        <h2>{{ t('b2b_title') }}</h2>
+        <p>{{ t('b2b_desc') | safe }}</p>
+        <ul class="b2b-list">
+          <li>
+            <div class="b2b-icon-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><polyline points="23 20 23 14 17 14"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/></svg>
+            </div>
+            <div>
+              <strong>{{ t('b2b_item1_title') }}</strong>
+              <span>{{ t('b2b_item1_desc') }}</span>
+            </div>
+          </li>
+          <li>
+            <div class="b2b-icon-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            </div>
+            <div>
+              <strong>{{ t('b2b_item2_title') }}</strong>
+              <span>{{ t('b2b_item2_desc') }}</span>
+            </div>
+          </li>
+          <li>
+            <div class="b2b-icon-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+            </div>
+            <div>
+              <strong>{{ t('b2b_item3_title') }}</strong>
+              <span>{{ t('b2b_item3_desc') }}</span>
+            </div>
+          </li>
+        </ul>
+        <a href="{{ url_for('public.contact') }}" class="btn btn-primary-solid" style="margin-top:1.5rem; display:inline-flex;">
+          {{ t('b2b_cta') }}
+        </a>
+      </div>
+      <div class="b2b-value-visual" data-reveal>
+        <div class="b2b-clients-card">
+          <div class="b2b-clients-title">{{ t('b2b_market_title') }}</div>
+          <div class="b2b-clients-subtitle">{{ t('b2b_market_subtitle') }}</div>
+          <div class="b2b-sectors">
+            <div class="b2b-sector-tag">{{ t('b2b_sector_packaging') }}</div>
+            <div class="b2b-sector-tag">{{ t('b2b_sector_bread') }}</div>
+            <div class="b2b-sector-tag">{{ t('b2b_sector_olive') }}</div>
+            <div class="b2b-sector-tag">{{ t('b2b_sector_spiral') }}</div>
+            <div class="b2b-sector-tag">{{ t('b2b_sector_meat') }}</div>
+            <div class="b2b-sector-tag">{{ t('b2b_sector_blancher') }}</div>
+            <div class="b2b-sector-tag">{{ t('b2b_sector_thermoform') }}</div>
+            <div class="b2b-sector-tag">{{ t('b2b_sector_integration') }}</div>
+          </div>
+          <div class="b2b-clients-note">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+            {{ t('b2b_intralox_note') }}
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
+</section>
 
-    <div class="categories-grid">
+{# ============================================================ KATEGORİLER ============================================================ #}
+<section class="categories-dark">
+  <div class="container">
+    <div class="section-heading" data-reveal>
+      <span class="eyebrow">{{ t('categories_eyebrow') }}</span>
+      <h2>{{ t('categories_title') }}</h2>
+      <p>{{ t('categories_desc') }}</p>
+    </div>
+    <div class="categories-grid" data-stagger>
       {% for cat in categories %}
-        <a href="{{ url_for('public.category_detail', slug=cat.slug) }}" class="category-card">
+        <a href="{{ url_for('public.category_detail', slug=cat.slug) }}" class="category-card category-card-dark">
           {% if cat.pitch_mm %}
-            <div class="pitch-badge">{{ cat.pitch_mm }} mm Hatve</div>
+            <div class="pitch-badge">{{ cat.pitch_mm }} mm {{ t('spec_pitch') }}</div>
           {% else %}
-            <div class="pitch-badge">Özel Seri</div>
+            <div class="pitch-badge">{{ t('pitch_special') }}</div>
           {% endif %}
-          <h3>{{ cat.name }}</h3>
-          <p>{{ cat.short_description }}</p>
+          <h3>{{ tdb(cat.name) }}</h3>
+          <p>{{ tdb(cat.short_description) }}</p>
           <span class="arrow">
-            İncele
+            {{ t('btn_explore') }}
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </span>
         </a>
@@ -131,21 +189,28 @@
   </div>
 </section>
 
-{# ============================================================
-   ÖNE ÇIKAN ÜRÜNLER
-   ============================================================ #}
-{% if featured_products %}
-<section style="background: var(--rb-bg);">
+{# ============================================================ ÜRÜN SERGİSİ ============================================================ #}
+<section class="urun-showcase">
   <div class="container">
-    <div class="section-heading">
-      <span class="eyebrow">Öne Çıkan Modeller</span>
-      <h2>Popüler Bant Serileri</h2>
-      <p>Makine üreticilerinin en çok tercih ettiği, kanıtlanmış modüler bant modelleri.</p>
-    </div>
+    <img src="/static/uploads/products/urun-katalogu.jpg"
+         alt="ROLOBAND Modüler Bant Sistemleri — Ürün Yelpazesi"
+         style="width:100%; border-radius:16px; box-shadow:0 20px 80px rgba(29,78,216,.25); display:block;"
+         loading="lazy">
+  </div>
+</section>
 
-    <div class="product-grid">
+{# ============================================================ ÖZELLIKLER ============================================================ #}
+{% if featured_products %}
+<section class="products-dark" style="padding-top: 5rem; padding-bottom: 5rem;">
+  <div class="container">
+    <div class="section-heading" data-reveal>
+      <span class="eyebrow">{{ t('featured_eyebrow') }}</span>
+      <h2>{{ t('featured_title') }}</h2>
+      <p>{{ t('featured_desc') }}</p>
+    </div>
+    <div class="product-grid" data-stagger>
       {% for product in featured_products %}
-        <a href="{{ url_for('public.product_detail', slug=product.slug) }}" class="product-card">
+        <a href="{{ url_for('public.product_detail', slug=product.slug) }}" class="product-card product-card-dark">
           <div class="image">
             {% if product.cover_image %}
               <img src="{{ product.cover_image }}" alt="{{ product.name }}" loading="lazy">
@@ -155,12 +220,12 @@
           </div>
           <div class="body">
             {% if product.code %}<div class="code">{{ product.code }}</div>{% endif %}
-            <h3>{{ product.name }}</h3>
-            <p class="desc">{{ product.short_description }}</p>
+            <h3>{{ tdb(product.name) }}</h3>
+            <p class="desc">{{ tdb(product.short_description) }}</p>
             <div class="product-specs">
-              {% if product.pitch_mm %}<span class="spec-chip">{{ product.pitch_mm }}mm hatve</span>{% endif %}
-              {% if product.open_area_pct is not none %}<span class="spec-chip">%{{ product.open_area_pct|int }} açık</span>{% endif %}
-              {% if product.surface_type %}<span class="spec-chip">{{ product.surface_type }}</span>{% endif %}
+              {% if product.pitch_mm %}<span class="spec-chip">{{ product.pitch_mm }}mm {{ t('pitch_suffix') }}</span>{% endif %}
+              {% if product.open_area_pct is not none %}<span class="spec-chip">%{{ product.open_area_pct|int }} {{ t('open_pct_suffix') }}</span>{% endif %}
+              {% if product.surface_type %}<span class="spec-chip">{{ tdb(product.surface_type) }}</span>{% endif %}
             </div>
           </div>
         </a>
@@ -170,89 +235,169 @@
 </section>
 {% endif %}
 
-{# ============================================================
-   SEKTÖRLER
-   ============================================================ #}
+{# ============================================================ MODÜLER BANT VİZÜALİZASYON ============================================================ #}
+<section class="belt-viz-section">
+  <div class="belt-grid-wrap">
+    <div class="belt-grid" id="beltGrid"></div>
+  </div>
+  <div class="container belt-viz-content">
+    <div class="belt-viz-badge">Modüler Tasarım</div>
+    <h2 class="belt-viz-title">Her Hücre Yerli Yerinde</h2>
+    <p class="belt-viz-desc">ROLOBAND modüler bantlar, birbiriyle kenetlenen bağımsız hücrelerden oluşur.<br>Tek parça hasar — tek hücre değişimi.</p>
+    <div class="belt-viz-stats">
+      <div class="bvs-item"><span class="bvs-num">50<sup>+</sup></span><span class="bvs-label">Ürün Modeli</span></div>
+      <div class="bvs-sep"></div>
+      <div class="bvs-item"><span class="bvs-num">25mm</span><span class="bvs-label">Min. Modül Aralığı</span></div>
+      <div class="bvs-sep"></div>
+      <div class="bvs-item"><span class="bvs-num">7</span><span class="bvs-label">Standart Renk</span></div>
+    </div>
+  </div>
+</section>
+
+{# ============================================================ NEDEN ROLOBAND (RAKIP KARŞILAŞTIRMA) ============================================================ #}
+<section style="background: var(--rb-dark); color:#fff; padding: 5rem 0;">
+  <div class="container">
+    <div class="section-heading" data-reveal style="color:#fff;">
+      <span class="eyebrow" style="color: var(--rb-accent); background: rgba(59,130,246,.12);">{{ t('compare_eyebrow') }}</span>
+      <h2 style="color:#fff;">{{ t('compare_title') }}</h2>
+      <p style="color:rgba(255,255,255,.7);">{{ t('compare_desc') }}</p>
+    </div>
+    <div class="compare-grid" data-stagger>
+      <div class="compare-card">
+        <div class="compare-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </div>
+        <h3>{{ t('compare1_title') }}</h3>
+        <p>{{ t('compare1_desc') }}</p>
+      </div>
+      <div class="compare-card">
+        <div class="compare-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        </div>
+        <h3>{{ t('compare2_title') }}</h3>
+        <p>{{ t('compare2_desc') }}</p>
+      </div>
+      <div class="compare-card">
+        <div class="compare-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+        </div>
+        <h3>{{ t('compare3_title') }}</h3>
+        <p>{{ t('compare3_desc') }}</p>
+      </div>
+      <div class="compare-card">
+        <div class="compare-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+        </div>
+        <h3>{{ t('compare4_title') }}</h3>
+        <p>{{ t('compare4_desc') }}</p>
+      </div>
+      <div class="compare-card">
+        <div class="compare-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        </div>
+        <h3>{{ t('compare5_title') }}</h3>
+        <p>{{ t('compare5_desc') }}</p>
+      </div>
+      <div class="compare-card">
+        <div class="compare-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+        </div>
+        <h3>{{ t('compare6_title') }}</h3>
+        <p>{{ t('compare6_desc') }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+{# ============================================================ SEKTÖRLER ============================================================ #}
 <section class="industries">
   <div class="container">
-    <div class="section-heading">
-      <span class="eyebrow">Hizmet Verdiğimiz Alanlar</span>
-      <h2>Gıda Endüstrisinin Her Halkasında</h2>
-      <p>Kırmızı et hatlarından su ürünleri işlemeye, baharat üretiminden lojistik paketlemeye.</p>
+    <div class="section-heading" data-reveal>
+      <span class="eyebrow">{{ t('industries_eyebrow') }}</span>
+      <h2>{{ t('industries_title') }}</h2>
+      <p>{{ t('industries_desc') }}</p>
     </div>
+    <div class="industry-grid" data-stagger>
 
-    <div class="industry-grid">
-      <div class="industry-card"><div class="icon">🥩</div><h4>Kırmızı Et</h4></div>
-      <div class="industry-card"><div class="icon">🐔</div><h4>Beyaz Et / Tavuk</h4></div>
-      <div class="industry-card"><div class="icon">🐟</div><h4>Su Ürünleri</h4></div>
-      <div class="industry-card"><div class="icon">🍞</div><h4>Unlu Mamuller</h4></div>
-      <div class="industry-card"><div class="icon">🥬</div><h4>Meyve / Sebze</h4></div>
-      <div class="industry-card"><div class="icon">🫒</div><h4>Zeytin & Turşu</h4></div>
-      <div class="industry-card"><div class="icon">🌶️</div><h4>Baharat</h4></div>
-      <div class="industry-card"><div class="icon">📦</div><h4>Paketleme & Lojistik</h4></div>
+      <div class="industry-card">
+        <div class="industry-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 10V11"/></svg>
+        </div>
+        <h4>{{ t('ind_packaging_title') }}</h4>
+        <p style="font-size:.8rem;margin:.3rem 0 0">{{ t('ind_packaging_sub') }}</p>
+      </div>
+
+      <div class="industry-card">
+        <div class="industry-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+        </div>
+        <h4>{{ t('ind_bread_title') }}</h4>
+        <p style="font-size:.8rem;margin:.3rem 0 0">{{ t('ind_bread_sub') }}</p>
+      </div>
+
+      <div class="industry-card">
+        <div class="industry-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9"/><path d="M21 3v9h-9"/></svg>
+        </div>
+        <h4>{{ t('ind_spiral_title') }}</h4>
+        <p style="font-size:.8rem;margin:.3rem 0 0">{{ t('ind_spiral_sub') }}</p>
+      </div>
+
+      <div class="industry-card">
+        <div class="industry-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+        </div>
+        <h4>{{ t('ind_olive_title') }}</h4>
+        <p style="font-size:.8rem;margin:.3rem 0 0">{{ t('ind_olive_sub') }}</p>
+      </div>
+
+      <div class="industry-card">
+        <div class="industry-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg>
+        </div>
+        <h4>{{ t('ind_blancher_title') }}</h4>
+        <p style="font-size:.8rem;margin:.3rem 0 0">{{ t('ind_blancher_sub') }}</p>
+      </div>
+
+      <div class="industry-card">
+        <div class="industry-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+        </div>
+        <h4>{{ t('ind_meat_title') }}</h4>
+        <p style="font-size:.8rem;margin:.3rem 0 0">{{ t('ind_meat_sub') }}</p>
+      </div>
+
+      <div class="industry-card">
+        <div class="industry-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <h4>{{ t('ind_seafood_title') }}</h4>
+        <p style="font-size:.8rem;margin:.3rem 0 0">{{ t('ind_seafood_sub') }}</p>
+      </div>
+
+      <div class="industry-card">
+        <div class="industry-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </div>
+        <h4>{{ t('ind_conveyor_title') }}</h4>
+        <p style="font-size:.8rem;margin:.3rem 0 0">{{ t('ind_conveyor_sub') }}</p>
+      </div>
+
     </div>
   </div>
 </section>
 
-{# ============================================================
-   NEDEN ROLOBAND
-   ============================================================ #}
-<section class="features">
-  <div class="container">
-    <div class="section-heading">
-      <span class="eyebrow">Neden ROLOBAND?</span>
-      <h2>Makine İmalatçıları İçin Tasarlanmış</h2>
-      <p>Sadece bant tedariği değil, üretim hatlarınız için sürekli mühendislik desteği.</p>
-    </div>
-
-    <div class="feature-grid">
-      <div class="feature">
-        <div class="num">01</div>
-        <h3>Gıdaya Uygun Malzemeler</h3>
-        <p>POM, PP ve PE seçenekleri ile FDA ve EU 10/2011 standartlarında üretim. -70°C ile +105°C arası geniş çalışma aralığı.</p>
-      </div>
-      <div class="feature">
-        <div class="num">02</div>
-        <h3>Kolay Temizlik & Hijyen</h3>
-        <p>Çıplak ürün taşınan hatlar için "Çok İyi" temizlenebilirlik. Açık, kapalı ve süzgeçli yüzey alternatifleri.</p>
-      </div>
-      <div class="feature">
-        <div class="num">03</div>
-        <h3>Kesintisiz Tedarik</h3>
-        <p>İzmir merkezli stoklu üretim. Makine üreticisi müşterilerimize hızlı ve sürekli sevkiyat garantisi.</p>
-      </div>
-      <div class="feature">
-        <div class="num">04</div>
-        <h3>Mühendislik Desteği</h3>
-        <p>Her uygulamaya özel hatve ve yüzey önerisi. Dar dönüş, yüksek hız, ağır yük — her senaryoya çözüm.</p>
-      </div>
-      <div class="feature">
-        <div class="num">05</div>
-        <h3>Uzun Ömürlü Yapı</h3>
-        <p>Kendinden kilitli pim teknolojisi, yüksek çekme mukavemeti ve aşınma direnci ile uzun servis ömrü.</p>
-      </div>
-      <div class="feature">
-        <div class="num">06</div>
-        <h3>Geniş Aksesuar Yelpazesi</h3>
-        <p>Dişliler, profiller, sürtünme destekleri ve özel parçalar — komple konveyör çözümü tek bir tedarikçiden.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-{# ============================================================
-   CTA BANNER
-   ============================================================ #}
+{# ============================================================ CTA ============================================================ #}
 <section>
   <div class="container">
-    <div class="cta-banner">
+    <div class="cta-banner" data-reveal>
       <div>
-        <h2>Projeniz için doğru bandı bulalım</h2>
-        <p>Hattınızın koşullarına özel hatve, yüzey ve malzeme önerisi için mühendislik ekibimizle iletişime geçin.</p>
+        <h2>{{ t('cta_title') }}</h2>
+        <p>{{ t('cta_desc') }}</p>
       </div>
       <div class="actions">
-        <a href="{{ url_for('public.contact') }}" class="btn btn-primary">Teklif İste</a>
-        <a href="{{ url_for('public.products_index') }}" class="btn btn-outline-light">Katalogu Görüntüle</a>
+        <a href="{{ url_for('public.contact') }}" class="btn btn-primary">{{ t('cta_quote') }}</a>
+        <a href="{{ url_for('public.products_index') }}" class="btn btn-outline-light">{{ t('cta_catalog') }}</a>
       </div>
     </div>
   </div>
